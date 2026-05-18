@@ -219,3 +219,7 @@ __marimo__/
 
 #.idea
 .idea
+
+#poetry files
+poetry.lock
+poetry.toml
