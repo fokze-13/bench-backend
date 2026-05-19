@@ -1,3 +1,4 @@
+from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
 from environs import env
 
@@ -7,7 +8,7 @@ class Config(BaseSettings):
     db_password: str = env("DB_PSWD")
     db_user: str = env("DB_USER")
     db_host: str = env("DB_HOST")
-    db_url: str = (
+    db_url: PostgresDsn = (
         f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:5432/{db_name}"
     )
 
