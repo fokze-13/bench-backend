@@ -1,3 +1,3 @@
-from app.models import base
+from app.models import base, user
 
-__all__ = "base"
+__all__ = "base, user"
