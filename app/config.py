@@ -12,5 +12,7 @@ class Config(BaseSettings):
         f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:5432/{db_name}"
     )
 
+    jwt_secret: str = env("JWT_SECRET")
+
 
 settings = Config()
