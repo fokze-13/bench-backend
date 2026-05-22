@@ -16,9 +16,7 @@ asyncpg = "^0.31.0"
 uvicorn = "^0.47.0"
 pydantic-settings = "^2.14.1"
 greenlet = "^3.5.0"
-pyjwt = "^2.13.0"
-aioredis = "^2.0.1"
-redis = "^7.4.0"
+jwt = "^1.4.0"
 
 
 [build-system]
