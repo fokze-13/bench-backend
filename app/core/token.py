@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from dataclasses import dataclass
 from app.config import settings
 import jwt
@@ -16,9 +17,11 @@ instance = jwt
 class TokenPayload:
     sid: str
     ver: int
+    exp: datetime
 
 
 def create_token(sid: str, ver: int) -> str:
+    exp = datetime.now() + TTL
     payload = {"sid": sid, "ver": ver, "exp": exp}
     return instance.encode(payload=payload, key=SECRET, alg=ALGORITHM)
 
@@ -30,6 +33,7 @@ def decode_token(token: str) -> TokenPayload:
         return TokenPayload(
             sid=decoded["sid"],
             ver=decoded["int"],
+            exp=decoded["exp"]
         )
     except jwt.ExpiredSignatureError:
         raise ExpiredTokenError("This token had expired")
