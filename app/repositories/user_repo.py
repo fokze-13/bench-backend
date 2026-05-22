@@ -1,6 +1,6 @@
 from sqlalchemy import select, update, delete
 from app.models.user import User
-from app.repositories.abc_model_repo import AbstractRepository
+from app.repositories.abc_repo import AbstractRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
