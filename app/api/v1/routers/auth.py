@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from app.exceptions import UnexpectedError
 from app.schemas.auth import TokenRead, TokenCreate
 from app.api.v1.deps.user_deps import get_user_service
@@ -14,8 +14,10 @@ UserServiceDep = Annotated[UserService, Depends(get_user_service)]
 async def get_token(body: TokenCreate, user_service: UserServiceDep):
     try:
         device_id = body.device_id
-        await user_service.register(device_id)
+        token = await user_service.register(device_id)
 
-        # TODO: token logic
-    except Exception:
-        raise UnexpectedError
+        return TokenRead(
+            token=token
+        )
+    except UnexpectedError:
+        raise HTTPException(status_code=500, detail="Unexpected error")
