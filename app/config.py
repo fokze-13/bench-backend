@@ -1,9 +1,16 @@
 from pydantic_settings import BaseSettings
 from environs import env
-from app.types import (DatabaseName, DatabasePassword, DatabaseUser,
-                   DatabaseURL, DatabaseHost, JWTSecret)
+from app.types import (
+    DatabaseName,
+    DatabasePassword,
+    DatabaseUser,
+    DatabaseURL,
+    DatabaseHost,
+    JWTSecret,
+)
 
 env.read_env()
+
 
 class Config(BaseSettings):
     db_name: DatabaseName = env("DB_NAME")

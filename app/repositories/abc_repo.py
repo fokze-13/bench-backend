@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from app.models.base import Base
 
+
 class AbstractRepository(ABC):
     @abstractmethod
     async def get(self, obj_id: int) -> Base | None:
