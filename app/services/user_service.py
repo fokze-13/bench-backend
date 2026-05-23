@@ -8,4 +8,7 @@ class UserService(AbstractService):
         self._repo = repository
 
     async def register(self, device_id: DeviceID) -> None:
-        await self._repo.create(device_id=device_id)
+        user_or_none = await self._repo.get_by_device_id(device_id)
+
+        if not user_or_none:
+            await self._repo.create(device_id=device_id)

@@ -13,6 +13,12 @@ class UserRepository(AbstractRepository):
         user = await self._session.execute(select(User).where(User.id == user_id))
         return user.scalar_one_or_none()
 
+    async def get_by_device_id(self, device_id: DeviceID) -> User | None:
+        user = await self._session.execute(
+            select(User).where(User.device_id == device_id)
+        )
+        return user.scalar_one_or_none()
+
     async def create(self, device_id: DeviceID) -> User:
         new_user = User(device_id=device_id)
         self._session.add(new_user)
