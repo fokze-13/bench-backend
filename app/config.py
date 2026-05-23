@@ -1,18 +1,20 @@
 from pydantic_settings import BaseSettings
 from environs import env
+from app.types import (DatabaseName, DatabasePassword, DatabaseUser,
+                   DatabaseURL, DatabaseHost, JWTSecret)
 
 env.read_env()
 
 class Config(BaseSettings):
-    db_name: str = env("DB_NAME")
-    db_password: str = env("DB_PSWD")
-    db_user: str = env("DB_USER")
-    db_host: str = env("DB_HOST")
-    db_url: str = (
+    db_name: DatabaseName = env("DB_NAME")
+    db_password: DatabasePassword = env("DB_PSWD")
+    db_user: DatabaseUser = env("DB_USER")
+    db_host: DatabaseHost = env("DB_HOST")
+    db_url: DatabaseURL = (
         f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:5432/{db_name}"
     )
 
-    jwt_secret: str = env("JWT_SECRET")
+    jwt_secret: JWTSecret = env("JWT_SECRET")
 
 
 settings = Config()
