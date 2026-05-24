@@ -1,6 +1,6 @@
 from app.repositories.user_repo import UserRepository
 from app.services.abc_service import AbstractService
-from app.types import DeviceID, Token
+from app.annotations import DeviceID, Token
 from app.core.security import create_access_token
 from app.exceptions import UnexpectedError
 

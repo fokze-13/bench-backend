@@ -1,7 +1,7 @@
 from app.models.base import Base
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String, Integer
-from app.types import UserID, DeviceID
+from app.annotations import UserID, DeviceID
 
 
 class User(Base):

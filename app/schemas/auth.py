@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from app.types import DeviceID, Token
+from app.annotations import DeviceID, Token
 
 
 class TokenCreate(BaseModel):

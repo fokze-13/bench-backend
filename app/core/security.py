@@ -1,4 +1,4 @@
-from app.types import DeviceID, Token
+from app.annotations import DeviceID, Token
 import jwt
 from app.config import settings
 from app.exceptions import InvalidToken

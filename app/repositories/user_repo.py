@@ -2,7 +2,7 @@ from sqlalchemy import select, update, delete
 from app.models.user import User
 from app.repositories.abc_repo import AbstractRepository
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.types import UserID, DeviceID
+from app.annotations import UserID, DeviceID
 
 
 class UserRepository(AbstractRepository):

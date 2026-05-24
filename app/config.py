@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from environs import env
-from app.types import (
+from app.annotations import (
     DatabaseName,
     DatabasePassword,
     DatabaseUser,
