@@ -1,3 +1,3 @@
-from app.repositories import abc_repo, user_repo
+from app.repositories import user_repo
 
-__all__ = "user_repo", "abc_repo"
+__all__ = "user_repo"
