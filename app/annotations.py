@@ -9,3 +9,5 @@ type DatabaseHost = str
 type DatabasePassword = str
 type DatabaseUser = str
 type DatabaseName = str
+
+type RedisURL = str

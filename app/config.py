@@ -7,6 +7,7 @@ from app.annotations import (
     DatabaseURL,
     DatabaseHost,
     JWTSecret,
+    RedisURL
 )
 
 env.read_env()
@@ -23,6 +24,8 @@ class Config(BaseSettings):
 
     jwt_secret: JWTSecret = env("JWT_SECRET")
     jwt_algorithm: str = env("JWT_ALGORITHM")
+
+    redis_url: RedisURL = env("REDIS_URL")
 
 
 settings = Config()
