@@ -17,7 +17,10 @@ uvicorn = "^0.47.0"
 pydantic-settings = "^2.14.1"
 greenlet = "^3.5.0"
 pyjwt = "^2.13.0"
+mypy = "^2.1.0"
 
+[tool.mypy]
+explicit_package_bases = true
 
 [build-system]
 requires = ["poetry-core"]
