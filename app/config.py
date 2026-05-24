@@ -24,4 +24,5 @@ class Config(BaseSettings):
     jwt_secret: JWTSecret = env("JWT_SECRET")
     jwt_algorithm: str = env("JWT_ALGORITHM")
 
+
 settings = Config()

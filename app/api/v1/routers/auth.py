@@ -16,8 +16,6 @@ async def get_token(body: TokenCreate, user_service: UserServiceDep):
         device_id = body.device_id
         token = await user_service.register(device_id)
 
-        return TokenRead(
-            token=token
-        )
+        return TokenRead(token=token)
     except UnexpectedError:
         raise HTTPException(status_code=500, detail="Unexpected error")
