@@ -1,4 +1,2 @@
-
-
 class InvalidToken(Exception):
     pass
