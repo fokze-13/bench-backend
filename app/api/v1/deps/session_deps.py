@@ -26,6 +26,6 @@ async def get_session_service(
     return SessionService(service_repo)
 
 
-async def get_device_id(token: Token = Header(...)) -> DeviceID:
+async def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
     device_id = verify_token(token)
     return device_id

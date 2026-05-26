@@ -10,6 +10,7 @@ router = APIRouter(prefix="/session")
 SessionServiceDep = Annotated[SessionService, Depends(get_session_service)]
 DeviceIDDep = Annotated[DeviceID, Depends(get_device_id)]
 
+
 @router.get("/get_session", response_model=GetSession)
 async def get_session(session_service: SessionServiceDep, device_id: DeviceIDDep):
     try:
