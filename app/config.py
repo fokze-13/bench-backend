@@ -7,7 +7,7 @@ from app.annotations import (
     DatabaseURL,
     DatabaseHost,
     JWTSecret,
-    RedisURL
+    RedisURL,
 )
 
 env.read_env()
