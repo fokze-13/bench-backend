@@ -1,3 +1,3 @@
-from app.schemas import auth
+from app.schemas import auth, session
 
-__all__ = "auth"
+__all__ = "auth", "session"
