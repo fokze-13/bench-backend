@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi.params import Depends
+from fastapi import Depends
 from redis.asyncio import Redis
 from app.repositories.session_repo import SessionRepository
 from app.services.session_service import SessionService
