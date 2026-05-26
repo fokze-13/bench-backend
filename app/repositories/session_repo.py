@@ -2,6 +2,7 @@ from uuid import uuid4
 from typing import Any
 from redis.asyncio import Redis
 from app.annotations import SessionID, DeviceID
+from app.config import SessionUserStatus
 
 
 class SessionRepository:
@@ -50,8 +51,8 @@ class SessionRepository:
         await self._client.hset(
             self._session_users_name.format(session_id=session_id),
             key=device_id,
-            value="matched",
-        )  # TODO get rid of hardcode
+            value=str(SessionUserStatus.MATCHED),
+        )
 
     async def update_session_user_status(
         self, session_id: SessionID, device_id: DeviceID, status: str

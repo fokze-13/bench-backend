@@ -1,3 +1,4 @@
+from app.config import SessionUserStatus
 from app.repositories.session_repo import SessionRepository
 from app.annotations import SessionID, DeviceID
 import asyncio
@@ -11,8 +12,10 @@ class SessionService:
 
     async def connect_user(self, device_id: DeviceID, session_id: SessionID) -> None:
         await self._redis_repo.update_session_user_status(
-            session_id=session_id, device_id=device_id, status="connected"
-        )  # TODO get rid of hardcode
+            session_id=session_id,
+            device_id=device_id,
+            status=str(SessionUserStatus.CONNECTED),
+        )
 
     async def match_session(self, device_id: DeviceID) -> SessionID:
         matched_session_id = await self._find_open_session()

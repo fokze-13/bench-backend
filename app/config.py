@@ -9,6 +9,7 @@ from app.annotations import (
     JWTSecret,
     RedisURL,
 )
+from enum import Enum
 
 env.read_env()
 
@@ -26,6 +27,11 @@ class Config(BaseSettings):
     jwt_algorithm: str = env("JWT_ALGORITHM")
 
     redis_url: RedisURL = env("REDIS_URL")
+
+
+class SessionUserStatus(Enum):
+    MATCHED = "matched"
+    CONNECTED = "connected"
 
 
 settings = Config()
