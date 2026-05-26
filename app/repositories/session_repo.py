@@ -1,4 +1,3 @@
-import json
 from uuid import uuid4
 from typing import Any
 from redis.asyncio import Redis
@@ -44,6 +43,15 @@ class SessionRepository:
         return await self._client.hget(
             self._session_users_name.format(session_id=session_id), device_id
         )
+
+    async def add_session_user(
+        self, session_id: SessionID, device_id: DeviceID
+    ) -> None:
+        await self._client.hset(
+            self._session_users_name.format(session_id=session_id),
+            key=device_id,
+            value="matched",
+        )  # TODO get rid of hardcode
 
     async def update_session_user_status(
         self, session_id: SessionID, device_id: DeviceID, status: str
