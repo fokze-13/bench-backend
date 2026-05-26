@@ -1,6 +1,5 @@
 from typing import Annotated
 from fastapi import APIRouter, HTTPException
-from app.exceptions import UnexpectedError
 from app.schemas.auth import TokenRead, TokenCreate
 from app.api.v1.deps.user_deps import get_user_service
 from fastapi import Depends
@@ -17,5 +16,5 @@ async def get_token(body: TokenCreate, user_service: UserServiceDep):
         token = await user_service.register(device_id)
 
         return TokenRead(token=token)
-    except UnexpectedError:
+    except:
         raise HTTPException(status_code=500, detail="Unexpected error")
