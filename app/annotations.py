@@ -1,5 +1,6 @@
 type DeviceID = str
 type UserID = int
+type SessionID = str
 
 type Token = str
 type JWTSecret = str
