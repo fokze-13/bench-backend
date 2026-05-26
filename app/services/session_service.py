@@ -31,7 +31,7 @@ class SessionService:
 
         sessions_user_counts = await asyncio.gather(
             *(
-                await self._redis_repo.get_session_users_count(session_id)
+                self._redis_repo.get_session_users_count(session_id)
                 for session_id in sessions_ids
             )
         )
