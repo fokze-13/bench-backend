@@ -4,8 +4,10 @@ from fastapi.params import Header, Query
 from redis.asyncio import Redis
 from app.annotations import DeviceID, Token, SessionID
 from app.core.security import verify_token
+from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
 from app.schemas.session import SessionQueryParams
+from app.services.session_manager_service import SessionManagerService
 from app.services.session_search_service import SessionSearchService
 
 redis_client: Redis | None = None
@@ -13,6 +15,9 @@ redis_client: Redis | None = None
 
 async def get_redis() -> Redis | None:
     return redis_client
+
+async def get_connection_manager() -> ConnectionManager:
+    return ConnectionManager()
 
 
 async def get_session_repo(
@@ -22,9 +27,15 @@ async def get_session_repo(
 
 
 async def get_session_search_service(
-    service_repo: Annotated[SessionRepository, Depends(get_session_repo)],
+    session_repo: Annotated[SessionRepository, Depends(get_session_repo)],
 ) -> SessionSearchService:
-    return SessionSearchService(service_repo)
+    return SessionSearchService(session_repo)
+
+async def get_session_manager_service(
+    session_repo: Annotated[SessionRepository, Depends(get_session_repo)],
+    connection_manager: Annotated[ConnectionManager, Depends(get_connection_manager)]
+) -> SessionManagerService:
+    return SessionManagerService(redis_repository=session_repo, connection_manager=connection_manager)
 
 
 async def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
