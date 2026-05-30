@@ -1,6 +1,6 @@
 import logging
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from app.annotations import DeviceID
 from app.api.v1.deps.session_deps import get_session_service, get_device_id
 from app.exceptions import InvalidToken
@@ -20,6 +20,24 @@ async def get_session(session_service: SessionServiceDep, device_id: DeviceIDDep
         session_id = await session_service.match_session(device_id=device_id)
 
         return GetSession(session_id=session_id)
+    except InvalidToken as e:
+        logger.error(e)
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Unexpected error")
+
+
+@router.websocket("/connect")
+async def connect(websocket: WebSocket, session_service: SessionServiceDep):
+    await websocket.accept()
+    try:
+
+        while True:
+            ...
+
+    except WebSocketDisconnect:
+        logger.info("disconnect")
     except InvalidToken as e:
         logger.error(e)
         raise HTTPException(status_code=401, detail="Invalid token")
