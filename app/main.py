@@ -1,14 +1,17 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from app.config import UVICORN_LOGGING_CONFIG
 from app.database import engine
 from app.api.v1.routers.auth import router as auth_router
 from app.api.v1.routers.session import router as session_router
 from app.redis_storage import get_redis_client
 from app.api.v1.deps import session_deps
+import logging.config
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logging.config.dictConfig(UVICORN_LOGGING_CONFIG)
     session_deps.redis_client = await get_redis_client()
     yield
     await engine.dispose()

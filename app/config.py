@@ -1,5 +1,7 @@
 from pydantic_settings import BaseSettings
 from environs import env
+
+
 from app.annotations import (
     DatabaseName,
     DatabasePassword,
@@ -32,6 +34,42 @@ class Config(BaseSettings):
 class SessionUserStatus(Enum):
     MATCHED = "matched"
     CONNECTED = "connected"
+
+
+LOGGING_FORMAT = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+LOGGING_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+LOGFILE = "logs/app.log"
+
+
+UVICORN_LOGGING_CONFIG = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": LOGGING_FORMAT,
+            "datefmt": LOGGING_DATE_FORMAT
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+            "stream": "ext://sys.stdout",
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": LOGFILE,
+            "formatter": "default"
+        }
+    },
+    "loggers": {
+        "uvicorn":        {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
+        "uvicorn.error":  {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
+        "uvicorn.access": {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
+        "app":            {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
+    },
+}
 
 
 settings = Config()
