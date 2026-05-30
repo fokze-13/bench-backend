@@ -2,12 +2,12 @@ from uuid import uuid4
 from typing import Any
 from redis.asyncio import Redis
 from app.annotations import SessionID, DeviceID
-from app.config import SessionUserStatus
+from app.config import SessionUserStatus, SESSIONS_NAME, SESSION_USERS_NAME
 
 
 class SessionRepository:
-    _sessions_name = "sessions"
-    _session_users_name = "session:{session_id}"
+    _sessions_name = SESSIONS_NAME
+    _session_users_name = SESSION_USERS_NAME
 
     def __init__(self, client: Redis) -> None:
         self._client = client
