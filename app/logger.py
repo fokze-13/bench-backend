@@ -13,10 +13,7 @@ def setup_logger(name: str, level: int) -> logging.Logger:
     file_handler = logging.FileHandler(LOGFILE)
     file_handler.setLevel(level)
 
-    formatter = logging.Formatter(
-        LOGGING_FORMAT,
-        datefmt=LOGGING_DATE_FORMAT
-    )
+    formatter = logging.Formatter(LOGGING_FORMAT, datefmt=LOGGING_DATE_FORMAT)
     handler.setFormatter(formatter)
 
     if not logger.handlers:

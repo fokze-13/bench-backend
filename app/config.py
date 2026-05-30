@@ -46,10 +46,7 @@ UVICORN_LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "default": {
-            "format": LOGGING_FORMAT,
-            "datefmt": LOGGING_DATE_FORMAT
-        }
+        "default": {"format": LOGGING_FORMAT, "datefmt": LOGGING_DATE_FORMAT}
     },
     "handlers": {
         "console": {
@@ -60,14 +57,26 @@ UVICORN_LOGGING_CONFIG = {
         "file": {
             "class": "logging.FileHandler",
             "filename": LOGFILE,
-            "formatter": "default"
-        }
+            "formatter": "default",
+        },
     },
     "loggers": {
-        "uvicorn":        {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
-        "uvicorn.error":  {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
-        "uvicorn.access": {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
-        "app":            {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
+        "uvicorn": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "uvicorn.error": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "uvicorn.access": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "app": {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
     },
 }
 

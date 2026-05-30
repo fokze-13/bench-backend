@@ -7,7 +7,6 @@ from fastapi import Depends
 from app.services.user_service import UserService
 from app.logger import setup_logger
 
-
 router = APIRouter(prefix="/auth")
 UserServiceDep = Annotated[UserService, Depends(get_user_service)]
 logger = setup_logger(__name__, logging.DEBUG)
