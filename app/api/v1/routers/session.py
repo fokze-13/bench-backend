@@ -1,8 +1,13 @@
 import logging
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
-from app.annotations import DeviceID
-from app.api.v1.deps.session_deps import get_session_service, get_device_id
+from app.annotations import DeviceID, SessionID
+from app.api.v1.deps.session_deps import (
+    get_session_service,
+    get_device_id,
+    websocket_get_device_id,
+    websocket_get_session_id,
+)
 from app.exceptions import InvalidToken
 from app.schemas.session import GetSession
 from app.services.session_service import SessionService
@@ -11,6 +16,10 @@ from app.logger import setup_logger
 router = APIRouter(prefix="/session")
 SessionServiceDep = Annotated[SessionService, Depends(get_session_service)]
 DeviceIDDep = Annotated[DeviceID, Depends(get_device_id)]
+
+WebSocketDeviceIDDep = Annotated[DeviceID, Depends(websocket_get_device_id)]
+WebSocketSessionIDDep = Annotated[SessionID, Depends(websocket_get_session_id)]
+
 logger = setup_logger(__name__, logging.DEBUG)
 
 
@@ -29,7 +38,12 @@ async def get_session(session_service: SessionServiceDep, device_id: DeviceIDDep
 
 
 @router.websocket("/connect")
-async def connect(websocket: WebSocket, session_service: SessionServiceDep):
+async def connect(
+    websocket: WebSocket,
+    session_service: SessionServiceDep,
+    device_id: WebSocketDeviceIDDep,
+    session_id: WebSocketSessionIDDep,
+):
     await websocket.accept()
     try:
 

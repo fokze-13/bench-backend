@@ -1,10 +1,11 @@
 from typing import Annotated
 from fastapi import Depends
-from fastapi.params import Header
+from fastapi.params import Header, Query
 from redis.asyncio import Redis
-from app.annotations import DeviceID, Token
+from app.annotations import DeviceID, Token, SessionID
 from app.core.security import verify_token
 from app.repositories.session_repo import SessionRepository
+from app.schemas.session import SessionQueryParams
 from app.services.session_service import SessionService
 
 redis_client: Redis | None = None
@@ -28,4 +29,18 @@ async def get_session_service(
 
 async def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
     device_id = verify_token(token)
+    return device_id
+
+
+async def websocket_get_session_id(
+    query: Annotated[SessionQueryParams, Query(...)],
+) -> SessionID:
+    session_id = query.session_id
+    return session_id
+
+
+async def websocket_get_device_id(
+    query: Annotated[SessionQueryParams, Query(...)],
+) -> DeviceID:
+    device_id = verify_token(query.token)
     return device_id

@@ -8,3 +8,8 @@ class GetSession(BaseModel):
 
 class SessionHeaders(BaseModel):
     token: Token
+
+
+class SessionQueryParams(BaseModel):
+    token: Token
+    session_id: SessionID
