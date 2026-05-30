@@ -14,6 +14,7 @@ from app.services.session_service import SessionService
 from app.logger import setup_logger
 
 router = APIRouter(prefix="/session")
+
 SessionServiceDep = Annotated[SessionService, Depends(get_session_service)]
 DeviceIDDep = Annotated[DeviceID, Depends(get_device_id)]
 
@@ -44,7 +45,6 @@ async def connect(
     device_id: WebSocketDeviceIDDep,
     session_id: WebSocketSessionIDDep,
 ):
-    await websocket.accept()
     try:
 
         while True:
