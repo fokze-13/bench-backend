@@ -24,6 +24,7 @@ class ConnectionManager:
     async def send_to(self, *device_ids: DeviceID, message: str) -> None:
         await asyncio.gather(
             *(
-                self.connections[device_id].send_text(message) for device_id in device_ids
+                self.connections[device_id].send_text(message)
+                for device_id in device_ids
             )
         )

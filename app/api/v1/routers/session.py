@@ -15,7 +15,9 @@ from app.logger import setup_logger
 
 router = APIRouter(prefix="/session")
 
-SessionSearchServiceDep = Annotated[SessionSearchService, Depends(get_session_search_service)]
+SessionSearchServiceDep = Annotated[
+    SessionSearchService, Depends(get_session_search_service)
+]
 DeviceIDDep = Annotated[DeviceID, Depends(get_device_id)]
 
 WebSocketDeviceIDDep = Annotated[DeviceID, Depends(websocket_get_device_id)]
