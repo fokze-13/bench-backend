@@ -1,11 +1,11 @@
-from app.config import SessionUserStatus
+from app.config import SessionUserStatus, MAX_USERS_PER_SESSION
 from app.repositories.session_repo import SessionRepository
 from app.annotations import SessionID, DeviceID
 import asyncio
 
 
 class SessionService:
-    _MAX_USERS_PER_SESSION = 3
+    _MAX_USERS_PER_SESSION = MAX_USERS_PER_SESSION
 
     def __init__(self, redis_repository: SessionRepository) -> None:
         self._redis_repo = redis_repository
