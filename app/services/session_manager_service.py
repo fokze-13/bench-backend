@@ -31,7 +31,9 @@ class SessionManagerService:
 
         await self._conn_manager.send_to(*filtered_session_users, message=message)
 
-    async def disconnect_from_session(self, device_id: DeviceID, session_id: SessionID):
+    async def disconnect_from_session(
+        self, device_id: DeviceID, session_id: SessionID
+    ) -> None:
         await self._conn_manager.disconnect(device_id)
         await self._redis_repo.delete_session_user(session_id, device_id)
 
