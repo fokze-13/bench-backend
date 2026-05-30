@@ -16,6 +16,7 @@ redis_client: Redis | None = None
 async def get_redis() -> Redis | None:
     return redis_client
 
+
 async def get_connection_manager() -> ConnectionManager:
     return ConnectionManager()
 
@@ -31,11 +32,14 @@ async def get_session_search_service(
 ) -> SessionSearchService:
     return SessionSearchService(session_repo)
 
+
 async def get_session_manager_service(
     session_repo: Annotated[SessionRepository, Depends(get_session_repo)],
-    connection_manager: Annotated[ConnectionManager, Depends(get_connection_manager)]
+    connection_manager: Annotated[ConnectionManager, Depends(get_connection_manager)],
 ) -> SessionManagerService:
-    return SessionManagerService(redis_repository=session_repo, connection_manager=connection_manager)
+    return SessionManagerService(
+        redis_repository=session_repo, connection_manager=connection_manager
+    )
 
 
 async def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:

@@ -7,9 +7,11 @@ from app.api.v1.deps.session_deps import (
     get_device_id,
     websocket_get_device_id,
     websocket_get_session_id,
+    get_session_manager_service,
 )
 from app.exceptions import InvalidToken
 from app.schemas.session import GetSession
+from app.services.session_manager_service import SessionManagerService
 from app.services.session_search_service import SessionSearchService
 from app.logger import setup_logger
 
@@ -18,6 +20,10 @@ router = APIRouter(prefix="/session")
 SessionSearchServiceDep = Annotated[
     SessionSearchService, Depends(get_session_search_service)
 ]
+SessionManagerServiceDep = Annotated[
+    SessionManagerService, Depends(get_session_manager_service)
+]
+
 DeviceIDDep = Annotated[DeviceID, Depends(get_device_id)]
 
 WebSocketDeviceIDDep = Annotated[DeviceID, Depends(websocket_get_device_id)]
@@ -43,13 +49,21 @@ async def get_session(session_service: SessionSearchServiceDep, device_id: Devic
 @router.websocket("/connect")
 async def connect(
     websocket: WebSocket,
+    session_manager: SessionManagerServiceDep,
     device_id: WebSocketDeviceIDDep,
     session_id: WebSocketSessionIDDep,
 ):
     try:
+        await session_manager.connect_to_session(
+            device_id=device_id, session_id=session_id, websocket=websocket
+        )
 
         while True:
-            ...
+            message = await websocket.receive_text()
+
+            await session_manager.broadcast_message_in_session(
+                device_id=device_id, session_id=session_id, message=message
+            )
 
     except WebSocketDisconnect:
         logger.info("disconnect")
