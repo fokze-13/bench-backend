@@ -4,7 +4,7 @@ from app.annotations import SessionID, DeviceID
 import asyncio
 
 
-class SessionService:
+class SessionSearchService:
     _MAX_USERS_PER_SESSION = MAX_USERS_PER_SESSION
 
     def __init__(self, redis_repository: SessionRepository) -> None:

@@ -6,7 +6,7 @@ from app.annotations import DeviceID, Token, SessionID
 from app.core.security import verify_token
 from app.repositories.session_repo import SessionRepository
 from app.schemas.session import SessionQueryParams
-from app.services.session_service import SessionService
+from app.services.session_search_service import SessionSearchService
 
 redis_client: Redis | None = None
 
@@ -21,10 +21,10 @@ async def get_session_repo(
     return SessionRepository(redis_client)
 
 
-async def get_session_service(
+async def get_session_search_service(
     service_repo: Annotated[SessionRepository, Depends(get_session_repo)],
-) -> SessionService:
-    return SessionService(service_repo)
+) -> SessionSearchService:
+    return SessionSearchService(service_repo)
 
 
 async def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
