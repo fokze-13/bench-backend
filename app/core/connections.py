@@ -1,4 +1,5 @@
 from fastapi import WebSocket
+from fastapi.websockets import WebSocketState
 from app.annotations import DeviceID
 import asyncio
 
@@ -19,6 +20,9 @@ class ConnectionManager:
         self.connections[device_id] = websocket
 
     async def disconnect(self, device_id: DeviceID) -> None:
+        if self.connections[device_id].client_state == WebSocketState.CONNECTED:
+            await self.connections[device_id].close()
+
         self.connections.pop(device_id)
 
     async def send_to(self, *device_ids: DeviceID, message: str) -> None:
