@@ -19,7 +19,6 @@ class ConnectionManager:
         self.connections[device_id] = websocket
 
     async def disconnect(self, device_id: DeviceID) -> None:
-        await self.connections[device_id].close()
         self.connections.pop(device_id)
 
     async def send_to(self, *device_ids: DeviceID, message: str) -> None:

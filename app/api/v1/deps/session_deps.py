@@ -10,6 +10,7 @@ from app.services.session_manager_service import SessionManagerService
 from app.services.session_search_service import SessionSearchService
 
 redis_client: Redis | None = None
+connection_manager: ConnectionManager | None = None
 
 
 async def get_redis() -> Redis | None:
@@ -17,7 +18,7 @@ async def get_redis() -> Redis | None:
 
 
 async def get_connection_manager() -> ConnectionManager:
-    return ConnectionManager()
+    return connection_manager
 
 
 async def get_session_repo(
@@ -34,10 +35,10 @@ async def get_session_search_service(
 
 async def get_session_manager_service(
     session_repo: Annotated[SessionRepository, Depends(get_session_repo)],
-    connection_manager: Annotated[ConnectionManager, Depends(get_connection_manager)],
+    conn_manager: Annotated[ConnectionManager, Depends(get_connection_manager)],
 ) -> SessionManagerService:
     return SessionManagerService(
-        redis_repository=session_repo, connection_manager=connection_manager
+        redis_repository=session_repo, connection_manager=conn_manager
     )
 
 

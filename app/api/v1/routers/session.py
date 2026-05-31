@@ -66,10 +66,16 @@ async def connect(
             )
 
     except WebSocketDisconnect:
-        logger.info("disconnect")
+        logger.info(f"{device_id} disconnect")
     except InvalidToken as e:
         logger.error(e)
         raise HTTPException(status_code=401, detail="Invalid token")
     except Exception as e:
         logger.error(e)
         raise HTTPException(status_code=500, detail="Unexpected error")
+
+    finally:
+        await session_manager.disconnect_from_session(
+            device_id=device_id,
+            session_id=session_id
+        )
