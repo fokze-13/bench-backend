@@ -6,7 +6,6 @@ from app.annotations import DeviceID, Token, SessionID
 from app.core.security import verify_token
 from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
-from app.schemas.session import SessionQueryParams
 from app.services.session_manager_service import SessionManagerService
 from app.services.session_search_service import SessionSearchService
 
@@ -48,14 +47,13 @@ async def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
 
 
 async def websocket_get_session_id(
-    query: Annotated[SessionQueryParams, Query(...)],
+    session_id: SessionID = Query(...)
 ) -> SessionID:
-    session_id = query.session_id
     return session_id
 
 
 async def websocket_get_device_id(
-    query: Annotated[SessionQueryParams, Query(...)],
+    token: Token = Query(...)
 ) -> DeviceID:
-    device_id = verify_token(query.token)
+    device_id = verify_token(token)
     return device_id
