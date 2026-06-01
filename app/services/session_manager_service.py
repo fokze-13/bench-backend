@@ -24,7 +24,7 @@ class SessionManagerService:
         )
 
         session_users_count = await self._redis_repo.get_session_users_count(session_id)
-        alias = await generate_alias(session_users_count)
+        alias = generate_alias(session_users_count)
 
         await self._redis_repo.add_session_user_alias(session_id, device_id, alias)
 
