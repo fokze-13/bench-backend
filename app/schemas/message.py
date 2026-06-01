@@ -1,10 +1,14 @@
 from pydantic import BaseModel
+from app.schemas.payload import (
+    ReceiveMessagePayload,
+    SendMessagePayload,
+    ErrorPayload,
+    ServerEventPayload,
+)
 
 
-class MessageReceive(BaseModel):
-    message: str
-
-
-class MessageSend(BaseModel):
-    message: str
-    author_alias: str
+class Message(BaseModel):
+    type: str
+    payload: (
+        ReceiveMessagePayload | SendMessagePayload | ErrorPayload | ServerEventPayload
+    )

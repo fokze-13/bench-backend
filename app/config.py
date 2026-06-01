@@ -86,4 +86,10 @@ SESSION_USERS_NAME = "session:{session_id}"
 SESSION_USERS_ALIASES_NAME = "session_aliases:{session_id}"
 
 
+ERROR_MESSAGE_TYPE = "error"
+EVENT_MESSAGE_TYPE = "event"
+SEND_MESSAGE_TYPE = "send_message"
+RECEIVE_MESSAGE_TYPE = "receive_message"
+
+
 settings = Config()

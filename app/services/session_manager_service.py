@@ -4,8 +4,16 @@ from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
 from app.config import SessionUserStatus
 from fastapi import WebSocket
-from app.schemas.message import MessageReceive, MessageSend
+from app.schemas.message import Message
+from app.schemas.payload import (
+    SendMessagePayload,
+    ReceiveMessagePayload,
+    ServerEventPayload,
+)
+from app.config import EVENT_MESSAGE_TYPE, RECEIVE_MESSAGE_TYPE, SEND_MESSAGE_TYPE
 from typing import Any
+
+# TODO maybe delegate the message logic to it's own module
 
 
 class SessionManagerService:
@@ -28,19 +36,40 @@ class SessionManagerService:
 
         await self._redis_repo.add_session_user_alias(session_id, device_id, alias)
 
+        await self._broadcast_message_in_session(
+            device_id=device_id,
+            session_id=session_id,
+            json_message=Message(
+                type=EVENT_MESSAGE_TYPE,
+                payload=ServerEventPayload(
+                    event_message=f"{alias} entered the room"  # TODO
+                ),
+            ).model_dump(),
+        )
+
     async def handle_message(
-        self, device_id: DeviceID, session_id: SessionID, message: MessageReceive
+        self, device_id: DeviceID, session_id: SessionID, message: Message
     ) -> None:
+        if message.type == RECEIVE_MESSAGE_TYPE:
+            payload = message.payload
+            await self._handle_user_received_message(
+                device_id=device_id, session_id=session_id, payload=payload #type: ignore[arg-type]
+            )
+
+    async def _handle_user_received_message(
+        self, device_id: DeviceID, session_id: SessionID, payload: ReceiveMessagePayload
+    ):
         alias = await self._redis_repo.get_session_user_alias(
             session_id=session_id, device_id=device_id
         )
-        message_content = message.message
+        message_content = payload.message
 
         await self._broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            json_message=MessageSend(
-                message=message_content, author_alias=alias
+            json_message=Message(
+                type=SEND_MESSAGE_TYPE,
+                payload=SendMessagePayload(message=message_content, author_alias=alias),
             ).model_dump(),
         )
 
@@ -60,8 +89,22 @@ class SessionManagerService:
     async def disconnect_from_session(
         self, device_id: DeviceID, session_id: SessionID
     ) -> None:
+        alias = await self._redis_repo.get_session_user_alias(
+            session_id=session_id, device_id=device_id
+        )
+
         await self._conn_manager.disconnect(device_id)
         await self._redis_repo.delete_session_user(session_id, device_id)
+        await self._broadcast_message_in_session(
+            device_id=device_id,
+            session_id=session_id,
+            json_message=Message(
+                type=EVENT_MESSAGE_TYPE,
+                payload=ServerEventPayload(
+                    event_message=f"{alias} left the room"  # TODO
+                ),
+            ).model_dump(),
+        )
 
     @staticmethod
     def _filter_session_users(
