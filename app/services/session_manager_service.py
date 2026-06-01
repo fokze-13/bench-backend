@@ -31,13 +31,17 @@ class SessionManagerService:
     async def handle_message(
         self, device_id: DeviceID, session_id: SessionID, message: MessageReceive
     ) -> None:
-        alias = await self._redis_repo.get_session_user_alias(session_id=session_id, device_id=device_id)
+        alias = await self._redis_repo.get_session_user_alias(
+            session_id=session_id, device_id=device_id
+        )
         message_content = message.message
 
         await self._broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            json_message=MessageSend(message=message_content, author_alias=alias).model_dump()
+            json_message=MessageSend(
+                message=message_content, author_alias=alias
+            ).model_dump(),
         )
 
     async def _broadcast_message_in_session(
@@ -49,7 +53,9 @@ class SessionManagerService:
             session_users, own_device_id=device_id
         )
 
-        await self._conn_manager.send_to(*filtered_session_users, json_message=json_message)
+        await self._conn_manager.send_to(
+            *filtered_session_users, json_message=json_message
+        )
 
     async def disconnect_from_session(
         self, device_id: DeviceID, session_id: SessionID

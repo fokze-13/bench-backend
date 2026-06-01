@@ -47,14 +47,10 @@ async def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
     return device_id
 
 
-async def websocket_get_session_id(
-    session_id: SessionID = Query(...)
-) -> SessionID:
+async def websocket_get_session_id(session_id: SessionID = Query(...)) -> SessionID:
     return session_id
 
 
-async def websocket_get_device_id(
-    token: Token = Query(...)
-) -> DeviceID:
+async def websocket_get_device_id(token: Token = Query(...)) -> DeviceID:
     device_id = verify_token(token)
     return device_id

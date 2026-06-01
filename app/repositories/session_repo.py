@@ -2,7 +2,12 @@ from uuid import uuid4
 from typing import Any
 from redis.asyncio import Redis
 from app.annotations import SessionID, DeviceID
-from app.config import SessionUserStatus, SESSIONS_NAME, SESSION_USERS_NAME, SESSION_USERS_ALIASES_NAME
+from app.config import (
+    SessionUserStatus,
+    SESSIONS_NAME,
+    SESSION_USERS_NAME,
+    SESSION_USERS_ALIASES_NAME,
+)
 
 
 class SessionRepository:
@@ -68,7 +73,7 @@ class SessionRepository:
         await self._client.hset(
             self._session_users_alias_name.format(session_id=session_id),
             key=device_id,
-            value=alias
+            value=alias,
         )
 
     async def update_session_user_status(

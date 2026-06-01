@@ -78,6 +78,5 @@ async def connect(
         logger.error(e)
     finally:
         await session_manager.disconnect_from_session(
-            device_id=device_id,
-            session_id=session_id
+            device_id=device_id, session_id=session_id
         )
