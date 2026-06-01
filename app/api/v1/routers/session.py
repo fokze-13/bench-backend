@@ -11,6 +11,7 @@ from app.api.v1.deps.session_deps import (
 )
 from app.exceptions import InvalidToken
 from app.schemas.session import GetSession
+from app.schemas.message import MessageReceive
 from app.services.session_manager_service import SessionManagerService
 from app.services.session_search_service import SessionSearchService
 from app.logger import setup_logger
@@ -59,9 +60,10 @@ async def connect(
         )
 
         while True:
-            message = await websocket.receive_text()
+            raw_message = await websocket.receive_json(mode="text")
+            message = MessageReceive.model_validate(raw_message)
 
-            await session_manager.broadcast_message_in_session(
+            await session_manager.handle_message(
                 device_id=device_id, session_id=session_id, message=message
             )
 

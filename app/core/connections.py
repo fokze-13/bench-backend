@@ -2,6 +2,7 @@ from fastapi import WebSocket
 from fastapi.websockets import WebSocketState
 from app.annotations import DeviceID
 import asyncio
+from typing import Any
 
 
 class ConnectionManager:
@@ -25,10 +26,10 @@ class ConnectionManager:
 
         self.connections.pop(device_id)
 
-    async def send_to(self, *device_ids: DeviceID, message: str) -> None:
+    async def send_to(self, *device_ids: DeviceID, json_message: Any) -> None:
         await asyncio.gather(
             *(
-                self.connections[device_id].send_text(message)
+                self.connections[device_id].send_json(json_message)
                 for device_id in device_ids
             )
         )
