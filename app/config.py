@@ -83,6 +83,7 @@ UVICORN_LOGGING_CONFIG = {
 MAX_USERS_PER_SESSION = 3
 SESSIONS_NAME = "sessions"
 SESSION_USERS_NAME = "session:{session_id}"
+SESSION_USERS_ALIASES_NAME = "session_aliases:{session_id}"
 
 
 settings = Config()

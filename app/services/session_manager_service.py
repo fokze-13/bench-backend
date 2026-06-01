@@ -3,7 +3,7 @@ from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
 from app.config import SessionUserStatus
 from fastapi import WebSocket
-from app.schemas.message import MessageReceive
+from app.schemas.message import MessageReceive, MessageSend
 from typing import Any
 
 
@@ -25,11 +25,17 @@ class SessionManagerService:
     async def handle_message(
         self, device_id: DeviceID, session_id: SessionID, message: MessageReceive
     ) -> None:
-        pass
+        alias = await self._redis_repo.get_session_user_alias(session_id=session_id, device_id=device_id)
+        message_content = message.message
 
+        await self._broadcast_message_in_session(
+            device_id=device_id,
+            session_id=session_id,
+            json_message=MessageSend(message=message_content, author_alias=alias).model_dump()
+        )
 
     async def _broadcast_message_in_session(
-        self, device_id: DeviceID, session_id: SessionID, json_message: Any
+        self, device_id: DeviceID, session_id: SessionID, json_message: dict[str, Any]
     ) -> None:
         session_users = await self._redis_repo.get_session_users(session_id)
 
