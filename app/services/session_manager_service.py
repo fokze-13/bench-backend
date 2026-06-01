@@ -1,4 +1,5 @@
 from app.annotations import DeviceID, SessionID
+from app.core.alias import generate_alias
 from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
 from app.config import SessionUserStatus
@@ -21,6 +22,11 @@ class SessionManagerService:
         await self._redis_repo.update_session_user_status(
             session_id, device_id, str(SessionUserStatus.CONNECTED)
         )
+
+        session_users_count = await self._redis_repo.get_session_users_count(session_id)
+        alias = await generate_alias(session_users_count)
+
+        await self._redis_repo.add_session_user_alias(session_id, device_id, alias)
 
     async def handle_message(
         self, device_id: DeviceID, session_id: SessionID, message: MessageReceive

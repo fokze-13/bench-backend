@@ -60,12 +60,15 @@ async def connect(
         )
 
         while True:
-            raw_message = await websocket.receive_json(mode="text")
-            message = MessageReceive.model_validate(raw_message)
+            try:
+                raw_message = await websocket.receive_json(mode="text")
+                message = MessageReceive.model_validate(raw_message)
 
-            await session_manager.handle_message(
-                device_id=device_id, session_id=session_id, message=message
-            )
+                await session_manager.handle_message(
+                    device_id=device_id, session_id=session_id, message=message
+                )
+            except ValueError as e:
+                logger.info(e)
 
     except WebSocketDisconnect:
         logger.info(f"{device_id} disconnect")

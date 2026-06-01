@@ -54,13 +54,17 @@ class SessionRepository:
         )
 
     async def add_session_user(
-        self, session_id: SessionID, device_id: DeviceID, alias: str
+        self, session_id: SessionID, device_id: DeviceID
     ) -> None:
         await self._client.hset(
             self._session_users_name.format(session_id=session_id),
             key=device_id,
             value=str(SessionUserStatus.MATCHED),
         )
+
+    async def add_session_user_alias(
+        self, session_id: SessionID, device_id: DeviceID, alias: str
+    ) -> None:
         await self._client.hset(
             self._session_users_alias_name.format(session_id=session_id),
             key=device_id,

@@ -1,5 +1,4 @@
-from app.config import SessionUserStatus, MAX_USERS_PER_SESSION
-from app.core.alias import generate_alias
+from app.config import MAX_USERS_PER_SESSION
 from app.repositories.session_repo import SessionRepository
 from app.annotations import SessionID, DeviceID
 import asyncio
@@ -11,21 +10,11 @@ class SessionSearchService:
     def __init__(self, redis_repository: SessionRepository) -> None:
         self._redis_repo = redis_repository
 
-    async def connect_user(self, device_id: DeviceID, session_id: SessionID) -> None:
-        await self._redis_repo.update_session_user_status(
-            session_id=session_id,
-            device_id=device_id,
-            status=str(SessionUserStatus.CONNECTED),
-        )
-
     async def match_session(self, device_id: DeviceID) -> SessionID:
         matched_session_id = await self._find_open_session()
-        user_count = await self._redis_repo.get_session_users_count(matched_session_id)
-
-        alias = await generate_alias(session_user_count=user_count)
 
         await self._redis_repo.add_session_user(
-            session_id=matched_session_id, device_id=device_id, alias=alias
+            session_id=matched_session_id, device_id=device_id
         )
 
         return matched_session_id
