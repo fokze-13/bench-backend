@@ -30,6 +30,8 @@ class Config(BaseSettings):
 
     redis_url: RedisURL = env("REDIS_URL")
 
+    is_production: bool = env("PRODUCTION")
+
 
 class SessionUserStatus(Enum):
     MATCHED = "matched"
