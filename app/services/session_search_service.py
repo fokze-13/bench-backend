@@ -2,6 +2,10 @@ from app.config import MAX_USERS_PER_SESSION
 from app.repositories.session_repo import SessionRepository
 from app.annotations import SessionID, DeviceID
 import asyncio
+import logging
+from app.logger import setup_logger
+
+logger = setup_logger(__name__, logging.INFO)
 
 
 class SessionSearchService:
@@ -12,6 +16,7 @@ class SessionSearchService:
 
     async def match_session(self, device_id: DeviceID) -> SessionID:
         matched_session_id = await self._find_open_session()
+        logger.info(f"Matched device {device_id} to session {matched_session_id}")
 
         await self._redis_repo.add_session_user(
             session_id=matched_session_id, device_id=device_id
@@ -45,4 +50,5 @@ class SessionSearchService:
         return await self._open_new_session()
 
     async def _open_new_session(self) -> SessionID:
+        logger.info("Opening new session")
         return await self._redis_repo.create_new_session()

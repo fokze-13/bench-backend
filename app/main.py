@@ -10,15 +10,23 @@ from app.api.v1.deps import session_deps
 from app.core.connections import ConnectionManager
 import logging.config
 
+import logging
+from app.logger import setup_logger
+
+logger = setup_logger(__name__, logging.INFO)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logging.config.dictConfig(UVICORN_LOGGING_CONFIG)
+    logger.info("Starting up application...")
     session_deps.redis_client = await get_redis_client()
     session_deps.connection_manager = ConnectionManager()
+    logger.info("Application started successfully")
     yield
+    logger.info("Shutting down application...")
     await engine.dispose()
     await session_deps.redis_client.aclose()
+    logger.info("Application shutdown complete")
 
 
 app = FastAPI(

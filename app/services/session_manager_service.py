@@ -12,6 +12,10 @@ from app.schemas.payload import (
 )
 from app.config import EVENT_MESSAGE_TYPE, RECEIVE_MESSAGE_TYPE, SEND_MESSAGE_TYPE
 from typing import Any
+import logging
+from app.logger import setup_logger
+
+logger = setup_logger(__name__, logging.INFO)
 
 # TODO maybe delegate the message logic to it's own module
 
@@ -26,6 +30,7 @@ class SessionManagerService:
     async def connect_to_session(
         self, device_id: DeviceID, session_id: SessionID, websocket: WebSocket
     ) -> None:
+        logger.info(f"Connecting device {device_id} to session {session_id}")
         await self._conn_manager.connect(device_id, websocket)
         await self._redis_repo.update_session_user_status(
             session_id, device_id, str(SessionUserStatus.CONNECTED)
@@ -76,6 +81,7 @@ class SessionManagerService:
     async def _broadcast_message_in_session(
         self, device_id: DeviceID, session_id: SessionID, json_message: dict[str, Any]
     ) -> None:
+        logger.info(f"Broadcasting message in session {session_id} from device {device_id}")
         session_users = await self._redis_repo.get_session_users(session_id)
 
         filtered_session_users = self._filter_session_users(
@@ -89,6 +95,7 @@ class SessionManagerService:
     async def disconnect_from_session(
         self, device_id: DeviceID, session_id: SessionID
     ) -> None:
+        logger.info(f"Disconnecting device {device_id} from session {session_id}")
         alias = await self._redis_repo.get_session_user_alias(
             session_id=session_id, device_id=device_id
         )

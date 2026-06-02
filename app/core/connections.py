@@ -3,6 +3,10 @@ from fastapi.websockets import WebSocketState
 from app.annotations import DeviceID
 import asyncio
 from typing import Any
+import logging
+from app.logger import setup_logger
+
+logger = setup_logger(__name__, logging.INFO)
 
 
 class ConnectionManager:
@@ -19,12 +23,14 @@ class ConnectionManager:
     async def connect(self, device_id: DeviceID, websocket: WebSocket) -> None:
         await websocket.accept()
         self.connections[device_id] = websocket
+        logger.info(f"Device {device_id} connected via websocket")
 
     async def disconnect(self, device_id: DeviceID) -> None:
         if self.connections[device_id].client_state == WebSocketState.CONNECTED:
             await self.connections[device_id].close()
 
         self.connections.pop(device_id)
+        logger.info(f"Device {device_id} disconnected from websocket")
 
     async def send_to(self, *device_ids: DeviceID, json_message: Any) -> None:
         await asyncio.gather(
