@@ -92,4 +92,8 @@ SEND_MESSAGE_TYPE = "send_message"
 RECEIVE_MESSAGE_TYPE = "receive_message"
 
 
+USER_ENTERED_CHAT = "{alias} entered the room"
+USER_LEFT_CHAT = "{alias} left the room"
+
+
 settings = Config()

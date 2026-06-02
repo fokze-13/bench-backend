@@ -2,7 +2,7 @@ from app.annotations import DeviceID, SessionID
 from app.core.alias import generate_alias
 from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
-from app.config import SessionUserStatus
+from app.config import SessionUserStatus, USER_ENTERED_CHAT, USER_LEFT_CHAT
 from fastapi import WebSocket
 from app.schemas.message import Message
 from app.schemas.payload import (
@@ -42,7 +42,7 @@ class SessionManagerService:
             json_message=Message(
                 type=EVENT_MESSAGE_TYPE,
                 payload=ServerEventPayload(
-                    event_message=f"{alias} entered the room"  # TODO
+                    event_message=USER_ENTERED_CHAT.format(alias=alias)
                 ),
             ).model_dump(),
         )
@@ -101,7 +101,7 @@ class SessionManagerService:
             json_message=Message(
                 type=EVENT_MESSAGE_TYPE,
                 payload=ServerEventPayload(
-                    event_message=f"{alias} left the room"  # TODO
+                    event_message=USER_LEFT_CHAT.format(alias=alias)
                 ),
             ).model_dump(),
         )
