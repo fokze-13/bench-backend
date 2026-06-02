@@ -13,27 +13,27 @@ redis_client: Redis | None = None
 connection_manager: ConnectionManager | None = None
 
 
-async def get_redis() -> Redis | None:
+def get_redis() -> Redis | None:
     return redis_client
 
 
-async def get_connection_manager() -> ConnectionManager | None:
+def get_connection_manager() -> ConnectionManager | None:
     return connection_manager
 
 
-async def get_session_repo(
+def get_session_repo(
     redis_client: Annotated[Redis, Depends(get_redis)],
 ) -> SessionRepository:
     return SessionRepository(redis_client)
 
 
-async def get_session_search_service(
+def get_session_search_service(
     session_repo: Annotated[SessionRepository, Depends(get_session_repo)],
 ) -> SessionSearchService:
     return SessionSearchService(session_repo)
 
 
-async def get_session_manager_service(
+def get_session_manager_service(
     session_repo: Annotated[SessionRepository, Depends(get_session_repo)],
     conn_manager: Annotated[ConnectionManager, Depends(get_connection_manager)],
 ) -> SessionManagerService:
@@ -42,18 +42,18 @@ async def get_session_manager_service(
     )
 
 
-async def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
+def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
     device_id = verify_token(token)
     return device_id
 
 
-async def websocket_get_session_id(
+def websocket_get_session_id(
     session_id: SessionID = Query(...),  # type: ignore[assignment]
 ) -> SessionID:
     return session_id
 
 
-async def websocket_get_device_id(
+def websocket_get_device_id(
     token: Token = Query(...),  # type: ignore[assignment]
 ) -> DeviceID:
     device_id = verify_token(token)
