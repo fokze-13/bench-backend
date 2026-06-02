@@ -15,6 +15,7 @@ from app.logger import setup_logger
 
 logger = setup_logger(__name__, logging.INFO)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logging.config.dictConfig(UVICORN_LOGGING_CONFIG)

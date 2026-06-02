@@ -81,7 +81,9 @@ class SessionManagerService:
     async def _broadcast_message_in_session(
         self, device_id: DeviceID, session_id: SessionID, json_message: dict[str, Any]
     ) -> None:
-        logger.info(f"Broadcasting message in session {session_id} from device {device_id}")
+        logger.info(
+            f"Broadcasting message in session {session_id} from device {device_id}"
+        )
         session_users = await self._redis_repo.get_session_users(session_id)
 
         filtered_session_users = self._filter_session_users(

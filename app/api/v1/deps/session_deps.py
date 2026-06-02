@@ -43,6 +43,7 @@ def get_session_manager_service(
         redis_repository=session_repo, connection_manager=conn_manager
     )
 
+
 def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
     try:
         device_id = verify_token(token)
@@ -64,4 +65,6 @@ def websocket_get_device_id(
         device_id = verify_token(token)
         return device_id
     except InvalidToken:
-        raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION, reason="Invalid token")
+        raise WebSocketException(
+            code=status.WS_1008_POLICY_VIOLATION, reason="Invalid token"
+        )
