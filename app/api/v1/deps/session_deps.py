@@ -1,5 +1,4 @@
 from typing import Annotated
-from fastapi import Depends
 from fastapi.params import Header, Query
 from redis.asyncio import Redis
 from app.annotations import DeviceID, Token, SessionID
@@ -8,6 +7,9 @@ from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
 from app.services.session_manager_service import SessionManagerService
 from app.services.session_search_service import SessionSearchService
+from fastapi import Depends, HTTPException
+from app.exceptions import InvalidToken
+from fastapi import WebSocketException, status
 
 redis_client: Redis | None = None
 connection_manager: ConnectionManager | None = None
@@ -41,10 +43,12 @@ def get_session_manager_service(
         redis_repository=session_repo, connection_manager=conn_manager
     )
 
-
 def get_device_id(token: Annotated[Token, Header(...)]) -> DeviceID:
-    device_id = verify_token(token)
-    return device_id
+    try:
+        device_id = verify_token(token)
+        return device_id
+    except InvalidToken:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 
 def websocket_get_session_id(
@@ -56,5 +60,8 @@ def websocket_get_session_id(
 def websocket_get_device_id(
     token: Token = Query(...),  # type: ignore[assignment]
 ) -> DeviceID:
-    device_id = verify_token(token)
-    return device_id
+    try:
+        device_id = verify_token(token)
+        return device_id
+    except InvalidToken:
+        raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION, reason="Invalid token")

@@ -10,7 +10,6 @@ from app.api.v1.deps.session_deps import (
     get_session_manager_service,
 )
 from app.config import ERROR_MESSAGE_TYPE
-from app.exceptions import InvalidToken
 from app.schemas.payload import ErrorPayload
 from app.schemas.session import GetSession
 from app.schemas.message import Message
@@ -41,9 +40,6 @@ async def get_session(session_service: SessionSearchServiceDep, device_id: Devic
         session_id = await session_service.match_session(device_id=device_id)
 
         return GetSession(session_id=session_id)
-    except InvalidToken as e:
-        logger.error(e)
-        raise HTTPException(status_code=401, detail="Invalid token")
     except Exception as e:
         logger.error(e)
         raise HTTPException(status_code=500, detail="Unexpected error")
@@ -81,9 +77,6 @@ async def connect(
 
     except WebSocketDisconnect:
         logger.info(f"{device_id} disconnect")
-    except InvalidToken as e:
-        logger.error(e)
-        await websocket.close(code=1000, reason="Invalid token")
     except Exception as e:
         logger.error(e)
         await websocket.close(code=1000, reason="Unexpected error")

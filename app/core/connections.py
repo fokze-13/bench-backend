@@ -26,6 +26,9 @@ class ConnectionManager:
         logger.info(f"Device {device_id} connected via websocket")
 
     async def disconnect(self, device_id: DeviceID) -> None:
+        if self.connections.get(device_id) is None:
+            return
+
         if self.connections[device_id].client_state == WebSocketState.CONNECTED:
             await self.connections[device_id].close()
 
