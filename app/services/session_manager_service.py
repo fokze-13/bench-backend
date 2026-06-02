@@ -53,7 +53,7 @@ class SessionManagerService:
         if message.type == RECEIVE_MESSAGE_TYPE:
             payload = message.payload
             await self._handle_user_received_message(
-                device_id=device_id, session_id=session_id, payload=payload #type: ignore[arg-type]
+                device_id=device_id, session_id=session_id, payload=payload  # type: ignore[arg-type]
             )
 
     async def _handle_user_received_message(
