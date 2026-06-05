@@ -21,6 +21,8 @@ mypy = "^2.1.0"
 redis = "^7.4.0"
 pytest = "^9.0.3"
 httpx = "^0.28.1"
+gunicorn = "^26.0.0"
+uvloop = "^0.22.1"
 
 [tool.mypy]
 explicit_package_bases = true
