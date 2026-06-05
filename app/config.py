@@ -9,7 +9,7 @@ from app.annotations import (
     DatabaseURL,
     DatabaseHost,
     JWTSecret,
-    RedisURL,
+    RedisURL, RedisPassword,
 )
 from enum import Enum
 
@@ -28,7 +28,9 @@ class Config(BaseSettings):
     jwt_secret: JWTSecret = env("JWT_SECRET")
     jwt_algorithm: str = env("JWT_ALGORITHM")
 
-    redis_url: RedisURL = env("REDIS_URL")
+    redis_password: RedisPassword = env("REDIS_PASSWORD")
+    redis_host: str = env("REDIS_HOST")
+    redis_url: RedisURL = f"redis://:{redis_password}@{redis_host}:6379"
 
     is_production: bool = env("PRODUCTION")
 
