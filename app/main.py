@@ -4,6 +4,7 @@ from app.config import UVICORN_LOGGING_CONFIG
 from app.database import engine
 from app.api.v1.routers.auth import router as auth_router
 from app.api.v1.routers.session import router as session_router
+from app.api.v1.routers.health_check import router as health_router
 from app.config import settings
 from app.redis_storage import get_redis_client
 from app.api.v1.deps import session_deps
@@ -39,3 +40,4 @@ app = FastAPI(
 
 app.include_router(auth_router)
 app.include_router(session_router)
+app.include_router(health_router)
