@@ -12,4 +12,4 @@ type DatabaseUser = str
 type DatabaseName = str
 
 type RedisURL = str
-type = RedisPassword = str
+type RedisPassword = str
