@@ -8,9 +8,6 @@ services:
     image: myapp:latest
     restart: unless-stopped
     env_file: .env
-    environment:
-      DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PSWD}@db:5432/${DB_NAME}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
     depends_on:
       db:
         condition: service_healthy
@@ -24,8 +21,11 @@ services:
       resources:
         limits:
           memory: 512M
-    volumes:
-      - ./logs:/logs
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   db:
     image: postgres:16-alpine
@@ -105,12 +105,10 @@ services:
       dockerfile: Dockerfile
       target: runtime
     env_file: .env
-    environment:
-      DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PSWD}@db:5432/${DB_NAME}
     command: ["alembic", "upgrade", "head"]
     depends_on:
-      db:
-        condition: service_healthy
+      app:
+        condition: service_started
     networks:
       - internal
     restart: no
@@ -122,4 +120,3 @@ networks:
 volumes:
   postgres_data:
   redis_data:
-  app:

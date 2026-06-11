@@ -43,8 +43,6 @@ class SessionUserStatus(Enum):
 LOGGING_FORMAT = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
 LOGGING_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-LOGFILE = "logs/app.log"
-
 
 UVICORN_LOGGING_CONFIG = {
     "version": 1,
@@ -58,29 +56,24 @@ UVICORN_LOGGING_CONFIG = {
             "formatter": "default",
             "stream": "ext://sys.stdout",
         },
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": LOGFILE,
-            "formatter": "default",
-        },
     },
     "loggers": {
         "uvicorn": {
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },
         "uvicorn.error": {
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },
         "uvicorn.access": {
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },
-        "app": {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
+        "app": {"handlers": ["console"], "level": "INFO", "propagate": False},
     },
 }
 

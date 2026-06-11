@@ -219,3 +219,7 @@ __marimo__/
 
 #.idea
 .idea
+
+# certbot secrets
+certbot/conf/
+certbot/www/
