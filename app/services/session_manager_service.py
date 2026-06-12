@@ -41,7 +41,7 @@ class SessionManagerService:
         await self.broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            json_message=UserStatusEvent(
+            python_obj_message=UserStatusEvent(
                 payload=UserStatusPayload(
                     alias=alias,
                     active_connections=active_connections,
@@ -51,17 +51,17 @@ class SessionManagerService:
         )
 
     async def broadcast_message_in_session(
-        self, device_id: DeviceID, session_id: SessionID, json_message: dict[str, Any]
+        self, device_id: DeviceID, session_id: SessionID, python_obj_message: dict[str, Any]
     ) -> None:
         logger.info(
             f"Broadcasting message in session {session_id} from device {device_id}"
         )
         session_users = await self._redis_repo.get_session_users(session_id)
 
-        filtered_session_users = self._filter_session_users(session_users)
+        filtered_session_users = self._filter_session_users(session_users, own_device_id=device_id)
 
         await self._conn_manager.send_to(
-            *filtered_session_users, json_message=json_message
+            *filtered_session_users, python_obj_message=python_obj_message
         )
 
     async def disconnect_from_session(
@@ -80,7 +80,7 @@ class SessionManagerService:
         await self.broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            json_message=UserStatusEvent(
+            python_obj_message=UserStatusEvent(
                 payload=UserStatusPayload(
                     alias=alias, active_connections=active_connections, status=USER_LEFT
                 )
@@ -89,12 +89,12 @@ class SessionManagerService:
 
     @staticmethod
     def _filter_session_users(
-        session_users: dict[DeviceID, SessionUserStatus],
+        session_users: dict[DeviceID, SessionUserStatus], own_device_id: DeviceID
     ) -> list[DeviceID]:
         filtered = []
 
         for device_id, status in session_users.items():
-            if status != str(SessionUserStatus.CONNECTED):
+            if device_id == own_device_id or status != str(SessionUserStatus.CONNECTED):
                 continue
             filtered.append(device_id)
 
