@@ -7,6 +7,7 @@ from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
 from app.services.session_manager_service import SessionManagerService
 from app.services.session_search_service import SessionSearchService
+from app.services.event_handler_service import EventHandlerService
 from fastapi import Depends, HTTPException
 from app.exceptions import InvalidToken
 from fastapi import WebSocketException, status
@@ -41,6 +42,14 @@ def get_session_manager_service(
 ) -> SessionManagerService:
     return SessionManagerService(
         redis_repository=session_repo, connection_manager=conn_manager
+    )
+
+def get_event_handler_service(
+    session_repo: Annotated[SessionRepository, Depends(get_session_repo)],
+    session_manager: Annotated[SessionManagerService, Depends(get_session_manager_service)]
+) -> EventHandlerService:
+    return EventHandlerService(
+        session_manager=session_manager, session_repo=session_repo
     )
 
 

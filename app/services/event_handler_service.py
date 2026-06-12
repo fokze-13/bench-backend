@@ -1,3 +1,4 @@
+from app.repositories.session_repo import SessionRepository
 from app.schemas.event import (
     SendMessageEvent,
     ReceiveMessageEvent,
@@ -9,6 +10,7 @@ from app.schemas.event import (
 )
 from app.annotations import WebSocketEvent
 from typing import Protocol
+from app.services.session_manager_service import SessionManagerService
 
 
 class EventHandlerCallable(Protocol):
@@ -16,7 +18,10 @@ class EventHandlerCallable(Protocol):
 
 
 class EventHandlerService:
-    def __init__(self):
+    def __init__(self, redis_repository: SessionRepository, session_manager: SessionManagerService):
+        self._redis_repo = redis_repository
+        self._session_manager = session_manager
+
         self._handlers_match: dict[str, EventHandlerCallable] = {
             SendMessageEvent.type: self._send_message_event_handler,
             ReceiveMessageEvent.type: self._receive_message_event_handler,
