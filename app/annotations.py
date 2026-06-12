@@ -1,3 +1,11 @@
+from typing import Annotated
+
+from pydantic import Field
+
+from app.schemas.event import SendMessageEvent, ReceiveMessageEvent, UserStatusEvent, ErrorEvent, TypingEvent, \
+    PingEvent, PongEvent
+
+
 type DeviceID = str
 type UserID = int
 type SessionID = str
@@ -13,3 +21,14 @@ type DatabaseName = str
 
 type RedisURL = str
 type RedisPassword = str
+
+WebSocketEvent = Annotated[
+    SendMessageEvent
+    | ReceiveMessageEvent
+    | UserStatusEvent
+    | TypingEvent
+    | ErrorEvent
+    | PingEvent
+    | PongEvent,
+    Field(discriminator="type"),
+]
