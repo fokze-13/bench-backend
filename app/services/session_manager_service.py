@@ -15,7 +15,9 @@ logger = setup_logger(__name__, logging.INFO)
 
 class SessionManagerService:
     def __init__(
-        self, redis_repository: SessionRepository, connection_manager: ConnectionManager,
+        self,
+        redis_repository: SessionRepository,
+        connection_manager: ConnectionManager,
     ) -> None:
         self._redis_repo = redis_repository
         self._conn_manager = connection_manager
@@ -43,7 +45,7 @@ class SessionManagerService:
                 payload=UserStatusPayload(
                     alias=alias,
                     active_connections=active_connections,
-                    status=USER_JOINED
+                    status=USER_JOINED,
                 )
             ).model_dump(),
         )
@@ -56,9 +58,7 @@ class SessionManagerService:
         )
         session_users = await self._redis_repo.get_session_users(session_id)
 
-        filtered_session_users = self._filter_session_users(
-            session_users
-        )
+        filtered_session_users = self._filter_session_users(session_users)
 
         await self._conn_manager.send_to(
             *filtered_session_users, json_message=json_message
@@ -82,9 +82,7 @@ class SessionManagerService:
             session_id=session_id,
             json_message=UserStatusEvent(
                 payload=UserStatusPayload(
-                    alias=alias,
-                    active_connections=active_connections,
-                    status=USER_LEFT
+                    alias=alias, active_connections=active_connections, status=USER_LEFT
                 )
             ).model_dump(),
         )

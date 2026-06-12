@@ -64,15 +64,13 @@ async def connect(
                 #     device_id=device_id, session_id=session_id, raw_message=raw_message
                 # )
                 pass
-                #TODO
+                # TODO
 
             except ValueError as e:
                 logger.error(e)
                 await websocket.send_json(
                     ErrorEvent(
-                        payload=ErrorPayload(
-                            error_message=str(e)
-                        ),
+                        payload=ErrorPayload(error_message=str(e)),
                     ).model_dump()
                 )
 

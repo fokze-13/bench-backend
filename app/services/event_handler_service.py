@@ -1,8 +1,14 @@
-from app.schemas.event import SendMessageEvent, ReceiveMessageEvent, UserStatusEvent, ErrorEvent, TypingEvent, \
-    PingEvent, PongEvent
+from app.schemas.event import (
+    SendMessageEvent,
+    ReceiveMessageEvent,
+    UserStatusEvent,
+    ErrorEvent,
+    TypingEvent,
+    PingEvent,
+    PongEvent,
+)
 from app.annotations import WebSocketEvent
 from typing import Protocol
-
 
 
 class EventHandlerCallable(Protocol):
@@ -25,23 +31,16 @@ class EventHandlerService:
         handler = self._handlers_match[event.type]
         await handler(event)
 
-    async def _send_message_event_handler(self, event: SendMessageEvent):
-        ...
+    async def _send_message_event_handler(self, event: SendMessageEvent): ...
 
-    async def _receive_message_event_handler(self, event: ReceiveMessageEvent):
-        ...
+    async def _receive_message_event_handler(self, event: ReceiveMessageEvent): ...
 
-    async def _user_status_event_handler(self, event: UserStatusEvent):
-        ...
+    async def _user_status_event_handler(self, event: UserStatusEvent): ...
 
-    async def _error_event_handler(self, event: ErrorEvent):
-        ...
+    async def _error_event_handler(self, event: ErrorEvent): ...
 
-    async def _typing_event_handler(self, event: TypingEvent):
-        ...
+    async def _typing_event_handler(self, event: TypingEvent): ...
 
-    async def _ping_event_handler(self, event: PingEvent):
-        ...
+    async def _ping_event_handler(self, event: PingEvent): ...
 
-    async def _pong_event_handler(self, event: PongEvent):
-        ...
+    async def _pong_event_handler(self, event: PongEvent): ...

@@ -9,7 +9,8 @@ from app.annotations import (
     DatabaseURL,
     DatabaseHost,
     JWTSecret,
-    RedisURL, RedisPassword,
+    RedisURL,
+    RedisPassword,
 )
 from enum import Enum
 

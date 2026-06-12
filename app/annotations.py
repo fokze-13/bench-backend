@@ -2,9 +2,15 @@ from typing import Annotated, Union
 
 from pydantic import Field
 
-from app.schemas.event import SendMessageEvent, ReceiveMessageEvent, UserStatusEvent, ErrorEvent, TypingEvent, \
-    PingEvent, PongEvent
-
+from app.schemas.event import (
+    SendMessageEvent,
+    ReceiveMessageEvent,
+    UserStatusEvent,
+    ErrorEvent,
+    TypingEvent,
+    PingEvent,
+    PongEvent,
+)
 
 type DeviceID = str
 type UserID = int
@@ -23,11 +29,11 @@ type RedisURL = str
 type RedisPassword = str
 
 type WebSocketEvent = Union[
-        SendMessageEvent,
-        ReceiveMessageEvent,
-        UserStatusEvent,
-        TypingEvent,
-        ErrorEvent,
-        PingEvent,
-        PongEvent
-    ]
+    SendMessageEvent,
+    ReceiveMessageEvent,
+    UserStatusEvent,
+    TypingEvent,
+    ErrorEvent,
+    PingEvent,
+    PongEvent,
+]
