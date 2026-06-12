@@ -82,15 +82,11 @@ SESSIONS_NAME = "sessions"
 SESSION_USERS_NAME = "session:{session_id}"
 SESSION_USERS_ALIASES_NAME = "session_aliases:{session_id}"
 
+USER_JOINED = "joined"
+USER_LEFT = "left"
 
-ERROR_MESSAGE_TYPE = "error"
-EVENT_MESSAGE_TYPE = "event"
-SEND_MESSAGE_TYPE = "send_message"
-RECEIVE_MESSAGE_TYPE = "receive_message"
-
-
-USER_ENTERED_CHAT = "{alias} entered the room"
-USER_LEFT_CHAT = "{alias} left the room"
+START_TYPING = "start"
+STOP_TYPING = "stop"
 
 
 settings = Config()

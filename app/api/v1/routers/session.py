@@ -9,10 +9,9 @@ from app.api.v1.deps.session_deps import (
     websocket_get_session_id,
     get_session_manager_service,
 )
-from app.config import ERROR_MESSAGE_TYPE
+from app.schemas.event import ErrorEvent
 from app.schemas.payload import ErrorPayload
 from app.schemas.session import GetSession
-from app.schemas.message import Message
 from app.services.session_manager_service import SessionManagerService
 from app.services.session_search_service import SessionSearchService
 from app.logger import setup_logger
@@ -59,19 +58,21 @@ async def connect(
 
         while True:
             try:
-                raw_message = await websocket.receive_json(mode="text")
-                message = Message.model_validate(raw_message)
-
-                await session_manager.handle_message(
-                    device_id=device_id, session_id=session_id, message=message
-                )
+                # raw_message = await websocket.receive_json(mode="text")
+                #
+                # await session_manager.handle_message(
+                #     device_id=device_id, session_id=session_id, raw_message=raw_message
+                # )
+                pass
+                #TODO
 
             except ValueError as e:
                 logger.error(e)
                 await websocket.send_json(
-                    Message(
-                        type=ERROR_MESSAGE_TYPE,
-                        payload=ErrorPayload(error_message="Invalid message"),
+                    ErrorEvent(
+                        payload=ErrorPayload(
+                            error_message=str(e)
+                        ),
                     ).model_dump()
                 )
 

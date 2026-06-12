@@ -2,27 +2,20 @@ from app.annotations import DeviceID, SessionID
 from app.core.alias import generate_alias
 from app.core.connections import ConnectionManager
 from app.repositories.session_repo import SessionRepository
-from app.config import SessionUserStatus, USER_ENTERED_CHAT, USER_LEFT_CHAT
+from app.config import SessionUserStatus, USER_JOINED, USER_LEFT
 from fastapi import WebSocket
-from app.schemas.message import Message
-from app.schemas.payload import (
-    SendMessagePayload,
-    ReceiveMessagePayload,
-    ServerEventPayload,
-)
-from app.config import EVENT_MESSAGE_TYPE, RECEIVE_MESSAGE_TYPE, SEND_MESSAGE_TYPE
 from typing import Any
 import logging
 from app.logger import setup_logger
+from app.schemas.event import UserStatusEvent
+from app.schemas.payload import UserStatusPayload
 
 logger = setup_logger(__name__, logging.INFO)
-
-# TODO maybe delegate the message logic to it's own module
 
 
 class SessionManagerService:
     def __init__(
-        self, redis_repository: SessionRepository, connection_manager: ConnectionManager
+        self, redis_repository: SessionRepository, connection_manager: ConnectionManager,
     ) -> None:
         self._redis_repo = redis_repository
         self._conn_manager = connection_manager
@@ -41,44 +34,21 @@ class SessionManagerService:
 
         await self._redis_repo.add_session_user_alias(session_id, device_id, alias)
 
-        await self._broadcast_message_in_session(
+        active_connections = await self._redis_repo.get_session_users_count(session_id)
+
+        await self.broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            json_message=Message(
-                type=EVENT_MESSAGE_TYPE,
-                payload=ServerEventPayload(
-                    event_message=USER_ENTERED_CHAT.format(alias=alias)
-                ),
+            json_message=UserStatusEvent(
+                payload=UserStatusPayload(
+                    alias=alias,
+                    active_connections=active_connections,
+                    status=USER_JOINED
+                )
             ).model_dump(),
         )
 
-    async def handle_message(
-        self, device_id: DeviceID, session_id: SessionID, message: Message
-    ) -> None:
-        if message.type == RECEIVE_MESSAGE_TYPE:
-            payload = message.payload
-            await self._handle_user_received_message(
-                device_id=device_id, session_id=session_id, payload=payload  # type: ignore[arg-type]
-            )
-
-    async def _handle_user_received_message(
-        self, device_id: DeviceID, session_id: SessionID, payload: ReceiveMessagePayload
-    ):
-        alias = await self._redis_repo.get_session_user_alias(
-            session_id=session_id, device_id=device_id
-        )
-        message_content = payload.message
-
-        await self._broadcast_message_in_session(
-            device_id=device_id,
-            session_id=session_id,
-            json_message=Message(
-                type=SEND_MESSAGE_TYPE,
-                payload=SendMessagePayload(message=message_content, author_alias=alias),
-            ).model_dump(),
-        )
-
-    async def _broadcast_message_in_session(
+    async def broadcast_message_in_session(
         self, device_id: DeviceID, session_id: SessionID, json_message: dict[str, Any]
     ) -> None:
         logger.info(
@@ -87,7 +57,7 @@ class SessionManagerService:
         session_users = await self._redis_repo.get_session_users(session_id)
 
         filtered_session_users = self._filter_session_users(
-            session_users, own_device_id=device_id
+            session_users
         )
 
         await self._conn_manager.send_to(
@@ -104,25 +74,29 @@ class SessionManagerService:
 
         await self._conn_manager.disconnect(device_id)
         await self._redis_repo.delete_session_user(session_id, device_id)
-        await self._broadcast_message_in_session(
+
+        active_connections = await self._redis_repo.get_session_users_count(session_id)
+
+        await self.broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            json_message=Message(
-                type=EVENT_MESSAGE_TYPE,
-                payload=ServerEventPayload(
-                    event_message=USER_LEFT_CHAT.format(alias=alias)
-                ),
+            json_message=UserStatusEvent(
+                payload=UserStatusPayload(
+                    alias=alias,
+                    active_connections=active_connections,
+                    status=USER_LEFT
+                )
             ).model_dump(),
         )
 
     @staticmethod
     def _filter_session_users(
-        session_users: dict[DeviceID, SessionUserStatus], own_device_id: DeviceID
+        session_users: dict[DeviceID, SessionUserStatus],
     ) -> list[DeviceID]:
         filtered = []
 
         for device_id, status in session_users.items():
-            if device_id == own_device_id or status != str(SessionUserStatus.CONNECTED):
+            if status != str(SessionUserStatus.CONNECTED):
                 continue
             filtered.append(device_id)
 

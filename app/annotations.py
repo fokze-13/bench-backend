@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Union
 
 from pydantic import Field
 
@@ -22,13 +22,12 @@ type DatabaseName = str
 type RedisURL = str
 type RedisPassword = str
 
-WebSocketEvent = Annotated[
-    SendMessageEvent
-    | ReceiveMessageEvent
-    | UserStatusEvent
-    | TypingEvent
-    | ErrorEvent
-    | PingEvent
-    | PongEvent,
-    Field(discriminator="type"),
-]
+type WebSocketEvent = Union[
+        SendMessageEvent,
+        ReceiveMessageEvent,
+        UserStatusEvent,
+        TypingEvent,
+        ErrorEvent,
+        PingEvent,
+        PongEvent
+    ]
