@@ -1,51 +1,74 @@
+from app.core.serializer_helper import deserialize_event
 from app.repositories.session_repo import SessionRepository
 from app.schemas.event import (
     SendMessageEvent,
     ReceiveMessageEvent,
-    UserStatusEvent,
-    ErrorEvent,
-    TypingEvent,
-    PingEvent,
-    PongEvent,
+    ServerTypingEvent, UserTypingEvent,
 )
-from app.annotations import WebSocketEvent
+from app.annotations import WebSocketEvent, DeviceID, SessionID
 from typing import Protocol
+from app.schemas.payload import ReceiveMessagePayload, ServerTypingPayload
 from app.services.session_manager_service import SessionManagerService
 
 
 class EventHandlerCallable(Protocol):
-    async def __call__(self, event: WebSocketEvent) -> None: ...
+    async def __call__(self, event: WebSocketEvent, device_id: DeviceID, session_id: SessionID) -> None: ...
 
 
 class EventHandlerService:
-    def __init__(self, redis_repository: SessionRepository, session_manager: SessionManagerService):
+    def __init__(self, redis_repository: SessionRepository, session_manager: SessionManagerService) -> None:
         self._redis_repo = redis_repository
         self._session_manager = session_manager
 
         self._handlers_match: dict[str, EventHandlerCallable] = {
             SendMessageEvent.type: self._send_message_event_handler,
-            ReceiveMessageEvent.type: self._receive_message_event_handler,
-            UserStatusEvent.type: self._user_status_event_handler,
-            ErrorEvent.type: self._error_event_handler,
-            TypingEvent.type: self._typing_event_handler,
-            PingEvent.type: self._typing_event_handler,
-            PongEvent.type: self._pong_event_handler,
+            ServerTypingEvent.type: self._typing_event_handler,
         }
 
-    async def handle(self, event: WebSocketEvent):
+    async def handle(self, event: WebSocketEvent, device_id: DeviceID, session_id: SessionID) -> None:
         handler = self._handlers_match[event.type]
-        await handler(event)
+        await handler(event, device_id, session_id)
 
-    async def _send_message_event_handler(self, event: SendMessageEvent): ...
+    async def _send_message_event_handler(self, event: SendMessageEvent, device_id: DeviceID, session_id: SessionID) -> None:
+        message = event.payload.message
+        alias = await self._redis_repo.get_session_user_alias(
+            session_id=session_id,
+            device_id=device_id
+        )
 
-    async def _receive_message_event_handler(self, event: ReceiveMessageEvent): ...
+        receive_message = ReceiveMessageEvent(
+            payload=ReceiveMessagePayload(
+                message=message,
+                alias=alias,
+            )
+        )
 
-    async def _user_status_event_handler(self, event: UserStatusEvent): ...
+        python_obj_message = deserialize_event(receive_message)
 
-    async def _error_event_handler(self, event: ErrorEvent): ...
+        await self._session_manager.broadcast_message_in_session(
+            device_id=device_id,
+            session_id=session_id,
+            python_obj_message=python_obj_message
+        )
 
-    async def _typing_event_handler(self, event: TypingEvent): ...
+    async def _typing_event_handler(self, event: UserTypingEvent, device_id: DeviceID, session_id: SessionID) -> None:
+        event_status = event.payload.typing
 
-    async def _ping_event_handler(self, event: PingEvent): ...
+        alias = await self._redis_repo.get_session_user_alias(
+            device_id=device_id, session_id=session_id
+        )
 
-    async def _pong_event_handler(self, event: PongEvent): ...
+        server_event = ServerTypingEvent(
+            payload=ServerTypingPayload(
+                typing=event_status,
+                alias=alias
+            )
+        )
+
+        python_obj_method = deserialize_event(server_event)
+
+        await self._session_manager.broadcast_message_in_session(
+            device_id=device_id,
+            session_id=session_id,
+            python_obj_message=python_obj_method
+        )
