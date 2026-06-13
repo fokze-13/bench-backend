@@ -1,6 +1,7 @@
 from app.annotations import DeviceID, SessionID
 from app.core.alias import generate_alias
 from app.core.connections import ConnectionManager
+from app.core.serializer_helper import deserialize_event
 from app.repositories.session_repo import SessionRepository
 from app.config import SessionUserStatus, USER_JOINED, USER_LEFT
 from fastapi import WebSocket
@@ -38,16 +39,18 @@ class SessionManagerService:
 
         active_connections = await self._redis_repo.get_session_users_count(session_id)
 
+        message = UserStatusEvent(
+            payload=UserStatusPayload(
+                alias=alias,
+                active_connections=active_connections,
+                status=USER_JOINED,
+            )
+        )
+
         await self.broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            python_obj_message=UserStatusEvent(
-                payload=UserStatusPayload(
-                    alias=alias,
-                    active_connections=active_connections,
-                    status=USER_JOINED,
-                )
-            ).model_dump(),
+            python_obj_message=deserialize_event(message)
         )
 
     async def broadcast_message_in_session(
@@ -77,14 +80,16 @@ class SessionManagerService:
 
         active_connections = await self._redis_repo.get_session_users_count(session_id)
 
+        message = UserStatusEvent(
+            payload=UserStatusPayload(
+                alias=alias, active_connections=active_connections, status=USER_LEFT
+            )
+        )
+
         await self.broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            python_obj_message=UserStatusEvent(
-                payload=UserStatusPayload(
-                    alias=alias, active_connections=active_connections, status=USER_LEFT
-                )
-            ).model_dump(),
+            python_obj_message=deserialize_event(message)
         )
 
     @staticmethod

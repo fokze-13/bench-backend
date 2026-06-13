@@ -9,7 +9,7 @@ from app.api.v1.deps.session_deps import (
     websocket_get_session_id,
     get_session_manager_service, get_event_handler_service,
 )
-from app.core.serializer_helper import serialize_event
+from app.core.serializer_helper import serialize_event, deserialize_event
 from app.schemas.event import ErrorEvent
 from app.schemas.payload import ErrorPayload
 from app.schemas.session import GetSession
@@ -76,10 +76,12 @@ async def connect(
 
             except ValueError as e:
                 logger.error(e)
-                await websocket.send_json(
-                    ErrorEvent(
+                error_event = ErrorEvent(
                         payload=ErrorPayload(error_message=str(e)),
-                    ).model_dump()
+                    )
+
+                await websocket.send_json(
+                    deserialize_event(error_event)
                 )
 
     except WebSocketDisconnect:
