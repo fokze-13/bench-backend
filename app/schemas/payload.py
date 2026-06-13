@@ -1,6 +1,5 @@
-from typing import LiteralString
 from pydantic import BaseModel
-from app.config import USER_JOINED, USER_LEFT, STOP_TYPING, START_TYPING
+from app.config import UserStatus, TypingStatus
 
 
 class SendMessagePayload(BaseModel):
@@ -15,15 +14,15 @@ class ReceiveMessagePayload(BaseModel):
 class UserStatusPayload(BaseModel):
     alias: str
     active_connections: int
-    status: LiteralString[USER_JOINED, USER_LEFT]
+    status: UserStatus
 
 
 class UserTypingPayload(BaseModel):
-    typing: LiteralString[START_TYPING, STOP_TYPING]
+    typing: TypingStatus
 
 
 class ServerTypingPayload(BaseModel):
-    typing: LiteralString[START_TYPING, STOP_TYPING]
+    typing: TypingStatus
     alias: str
 
 

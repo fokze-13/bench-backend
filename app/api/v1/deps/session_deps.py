@@ -44,12 +44,15 @@ def get_session_manager_service(
         redis_repository=session_repo, connection_manager=conn_manager
     )
 
+
 def get_event_handler_service(
     session_repo: Annotated[SessionRepository, Depends(get_session_repo)],
-    session_manager: Annotated[SessionManagerService, Depends(get_session_manager_service)]
+    session_manager: Annotated[
+        SessionManagerService, Depends(get_session_manager_service)
+    ],
 ) -> EventHandlerService:
     return EventHandlerService(
-        session_manager=session_manager, session_repo=session_repo
+        session_manager=session_manager, redis_repository=session_repo
     )
 
 

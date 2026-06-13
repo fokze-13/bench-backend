@@ -1,11 +1,13 @@
 from typing import Any
-from app.annotations import WebSocketEvent
+from app.schemas.event import SendMessageEvent, UserTypingEvent, WebSocketEvent
 from pydantic import TypeAdapter
 
-_adapter = TypeAdapter(WebSocketEvent)
+AnyClientEvent = SendMessageEvent | UserTypingEvent
+
+_adapter: TypeAdapter = TypeAdapter(AnyClientEvent)
 
 
-def serialize_event(raw_python_obj: dict[str, Any]) -> WebSocketEvent:
+def serialize_client_event(raw_python_obj: dict[str, Any]) -> AnyClientEvent:
     return _adapter.validate_python(raw_python_obj)
 
 

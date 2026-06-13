@@ -12,7 +12,7 @@ from app.annotations import (
     RedisURL,
     RedisPassword,
 )
-from enum import Enum
+from enum import Enum, StrEnum
 
 env.read_env()
 
@@ -83,11 +83,15 @@ SESSIONS_NAME = "sessions"
 SESSION_USERS_NAME = "session:{session_id}"
 SESSION_USERS_ALIASES_NAME = "session_aliases:{session_id}"
 
-USER_JOINED = "joined"
-USER_LEFT = "left"
 
-START_TYPING = "start"
-STOP_TYPING = "stop"
+class UserStatus(StrEnum):
+    USER_JOINED = "joined"
+    USER_LEFT = "left"
+
+
+class TypingStatus(StrEnum):
+    START_TYPING = "start"
+    STOP_TYPING = "stop"
 
 
 settings = Config()

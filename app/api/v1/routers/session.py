@@ -7,9 +7,10 @@ from app.api.v1.deps.session_deps import (
     get_device_id,
     websocket_get_device_id,
     websocket_get_session_id,
-    get_session_manager_service, get_event_handler_service,
+    get_session_manager_service,
+    get_event_handler_service,
 )
-from app.core.serializer_helper import serialize_event, deserialize_event
+from app.core.serializer_helper import serialize_client_event, deserialize_event
 from app.schemas.event import ErrorEvent
 from app.schemas.payload import ErrorPayload
 from app.schemas.session import GetSession
@@ -55,7 +56,7 @@ async def connect(
     session_manager: SessionManagerServiceDep,
     device_id: WebSocketDeviceIDDep,
     session_id: WebSocketSessionIDDep,
-    event_handler: EventHandlerServiceDep
+    event_handler: EventHandlerServiceDep,
 ):
     try:
         await session_manager.connect_to_session(
@@ -66,23 +67,19 @@ async def connect(
             try:
                 raw_python_obj_message = await websocket.receive_json(mode="text")
 
-                event = serialize_event(raw_python_obj_message)
+                event = serialize_client_event(raw_python_obj_message)
 
                 await event_handler.handle(
-                    event=event,
-                    device_id=device_id,
-                    session_id=session_id
+                    event=event, device_id=device_id, session_id=session_id
                 )
 
             except ValueError as e:
                 logger.error(e)
                 error_event = ErrorEvent(
-                        payload=ErrorPayload(error_message=str(e)),
-                    )
-
-                await websocket.send_json(
-                    deserialize_event(error_event)
+                    payload=ErrorPayload(error_message="Unexpected error"),
                 )
+
+                await websocket.send_json(deserialize_event(error_event))
 
     except WebSocketDisconnect:
         logger.info(f"{device_id} disconnect")

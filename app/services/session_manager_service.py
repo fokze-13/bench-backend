@@ -3,7 +3,7 @@ from app.core.alias import generate_alias
 from app.core.connections import ConnectionManager
 from app.core.serializer_helper import deserialize_event
 from app.repositories.session_repo import SessionRepository
-from app.config import SessionUserStatus, USER_JOINED, USER_LEFT
+from app.config import SessionUserStatus, UserStatus
 from fastapi import WebSocket
 from typing import Any
 import logging
@@ -43,25 +43,30 @@ class SessionManagerService:
             payload=UserStatusPayload(
                 alias=alias,
                 active_connections=active_connections,
-                status=USER_JOINED,
+                status=UserStatus.USER_JOINED,
             )
         )
 
         await self.broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            python_obj_message=deserialize_event(message)
+            python_obj_message=deserialize_event(message),
         )
 
     async def broadcast_message_in_session(
-        self, device_id: DeviceID, session_id: SessionID, python_obj_message: dict[str, Any]
+        self,
+        device_id: DeviceID,
+        session_id: SessionID,
+        python_obj_message: dict[str, Any],
     ) -> None:
         logger.info(
-            f"Broadcasting message in session {session_id} from device {device_id}"
+            f"Broadcasting event in session {session_id} from device {device_id}"
         )
         session_users = await self._redis_repo.get_session_users(session_id)
 
-        filtered_session_users = self._filter_session_users(session_users, own_device_id=device_id)
+        filtered_session_users = self._filter_session_users(
+            session_users, own_device_id=device_id
+        )
 
         await self._conn_manager.send_to(
             *filtered_session_users, python_obj_message=python_obj_message
@@ -82,14 +87,16 @@ class SessionManagerService:
 
         message = UserStatusEvent(
             payload=UserStatusPayload(
-                alias=alias, active_connections=active_connections, status=USER_LEFT
+                alias=alias,
+                active_connections=active_connections,
+                status=UserStatus.USER_LEFT,
             )
         )
 
         await self.broadcast_message_in_session(
             device_id=device_id,
             session_id=session_id,
-            python_obj_message=deserialize_event(message)
+            python_obj_message=deserialize_event(message),
         )
 
     @staticmethod
