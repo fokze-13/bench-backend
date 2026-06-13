@@ -4,8 +4,8 @@ from app.schemas.payload import (
     SendMessagePayload,
     ReceiveMessagePayload,
     UserStatusPayload,
-    TypingPayload,
-    ErrorPayload,
+    ServerTypingPayload,
+    ErrorPayload, UserTypingPayload,
 )
 
 
@@ -24,9 +24,14 @@ class UserStatusEvent(BaseModel):
     payload: UserStatusPayload
 
 
-class TypingEvent(BaseModel):
-    type: Literal["typing"] = "typing"
-    payload: TypingPayload
+class UserTypingEvent(BaseModel):
+    type: Literal["user_typing"] = "user_typing"
+    payload: UserTypingPayload
+
+
+class ServerTypingEvent(BaseModel):
+    type: Literal["server_typing"] = "server_typing"
+    payload: ServerTypingPayload
 
 
 class ErrorEvent(BaseModel):

@@ -18,7 +18,11 @@ class UserStatusPayload(BaseModel):
     status: LiteralString[USER_JOINED, USER_LEFT]
 
 
-class TypingPayload(BaseModel):
+class UserTypingPayload(BaseModel):
+    typing: LiteralString[START_TYPING, STOP_TYPING]
+
+
+class ServerTypingPayload(BaseModel):
     typing: LiteralString[START_TYPING, STOP_TYPING]
     alias: str
 

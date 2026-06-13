@@ -1,15 +1,12 @@
-from typing import Annotated, Union
-
-from pydantic import Field
-
+from typing import Union
 from app.schemas.event import (
     SendMessageEvent,
     ReceiveMessageEvent,
     UserStatusEvent,
     ErrorEvent,
-    TypingEvent,
+    ServerTypingEvent,
     PingEvent,
-    PongEvent,
+    PongEvent, UserTypingEvent,
 )
 
 type DeviceID = str
@@ -32,7 +29,8 @@ type WebSocketEvent = Union[
     SendMessageEvent,
     ReceiveMessageEvent,
     UserStatusEvent,
-    TypingEvent,
+    ServerTypingEvent,
+    UserTypingEvent,
     ErrorEvent,
     PingEvent,
     PongEvent,
