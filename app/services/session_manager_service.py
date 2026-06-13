@@ -53,15 +53,23 @@ class SessionManagerService:
             python_obj_message=deserialize_event(message),
         )
 
+        await self.send_to_itself(
+            device_id=device_id, python_obj_message=deserialize_event(message)
+        )
+
+    async def send_to_itself(
+        self, device_id: DeviceID, python_obj_message: dict[str, Any]
+    ) -> None:
+        await self._conn_manager.send_to(
+            device_id, python_obj_message=python_obj_message
+        )
+
     async def broadcast_message_in_session(
         self,
         device_id: DeviceID,
         session_id: SessionID,
         python_obj_message: dict[str, Any],
     ) -> None:
-        logger.info(
-            f"Broadcasting event in session {session_id} from device {device_id}"
-        )
         session_users = await self._redis_repo.get_session_users(session_id)
 
         filtered_session_users = self._filter_session_users(
