@@ -35,10 +35,10 @@ class ConnectionManager:
         self.connections.pop(device_id)
         logger.info(f"Device {device_id} disconnected from websocket")
 
-    async def send_to(self, *device_ids: DeviceID, json_message: Any) -> None:
+    async def send_to(self, *device_ids: DeviceID, python_obj_message: Any) -> None:
         await asyncio.gather(
             *(
-                self.connections[device_id].send_json(json_message)
+                self.connections[device_id].send_json(python_obj_message)
                 for device_id in device_ids
             )
         )

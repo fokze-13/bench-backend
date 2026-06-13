@@ -9,9 +9,10 @@ from app.annotations import (
     DatabaseURL,
     DatabaseHost,
     JWTSecret,
-    RedisURL, RedisPassword,
+    RedisURL,
+    RedisPassword,
 )
-from enum import Enum
+from enum import Enum, StrEnum
 
 env.read_env()
 
@@ -83,14 +84,14 @@ SESSION_USERS_NAME = "session:{session_id}"
 SESSION_USERS_ALIASES_NAME = "session_aliases:{session_id}"
 
 
-ERROR_MESSAGE_TYPE = "error"
-EVENT_MESSAGE_TYPE = "event"
-SEND_MESSAGE_TYPE = "send_message"
-RECEIVE_MESSAGE_TYPE = "receive_message"
+class UserStatus(StrEnum):
+    USER_JOINED = "joined"
+    USER_LEFT = "left"
 
 
-USER_ENTERED_CHAT = "{alias} entered the room"
-USER_LEFT_CHAT = "{alias} left the room"
+class TypingStatus(StrEnum):
+    START_TYPING = "start"
+    STOP_TYPING = "stop"
 
 
 settings = Config()

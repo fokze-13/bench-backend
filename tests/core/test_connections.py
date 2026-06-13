@@ -48,7 +48,7 @@ async def test_connection_manager_send_to():
     await manager.connect(device_id2, websocket2)
     
     message = {"type": "test", "payload": {}}
-    await manager.send_to(device_id1, device_id2, json_message=message)
+    await manager.send_to(device_id1, device_id2, python_obj_message=message)
     
     websocket1.send_json.assert_called_once_with(message)
     websocket2.send_json.assert_called_once_with(message)

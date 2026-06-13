@@ -1,17 +1,29 @@
 from pydantic import BaseModel
-
-
-class ReceiveMessagePayload(BaseModel):
-    message: str
+from app.config import UserStatus, TypingStatus
 
 
 class SendMessagePayload(BaseModel):
     message: str
-    author_alias: str
 
 
-class ServerEventPayload(BaseModel):
-    event_message: str
+class ReceiveMessagePayload(BaseModel):
+    message: str
+    alias: str
+
+
+class UserStatusPayload(BaseModel):
+    alias: str
+    active_connections: int
+    status: UserStatus
+
+
+class UserTypingPayload(BaseModel):
+    typing: TypingStatus
+
+
+class ServerTypingPayload(BaseModel):
+    typing: TypingStatus
+    alias: str
 
 
 class ErrorPayload(BaseModel):
