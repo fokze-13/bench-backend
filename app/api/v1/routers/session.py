@@ -69,7 +69,9 @@ async def connect(
                 event = serialize_event(raw_python_obj_message)
 
                 await event_handler.handle(
-                    event=event
+                    event=event,
+                    device_id=device_id,
+                    session_id=session_id
                 )
 
             except ValueError as e:
