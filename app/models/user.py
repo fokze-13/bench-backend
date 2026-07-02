@@ -1,7 +1,9 @@
 from app.models.base import Base
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer
 from app.annotations import UserID, DeviceID
+from app.models.language import LanguageModel
+from app.models.session_theme import SessionThemeModel
 
 
 class UserModel(Base):
@@ -9,3 +11,5 @@ class UserModel(Base):
 
     id: Mapped[UserID] = mapped_column(Integer, primary_key=True)
     device_id: Mapped[DeviceID] = mapped_column(String, unique=True, nullable=False)
+    preferred_language: Mapped["LanguageModel"] = relationship()
+    preferred_session_theme: Mapped["SessionThemeModel"] = relationship()

@@ -13,3 +13,9 @@ type DatabaseName = str
 
 type RedisURL = str
 type RedisPassword = str
+
+type LanguageID = int
+type Language = str
+
+type ThemeID = int
+type Theme = str
