@@ -4,7 +4,7 @@ from sqlalchemy import String, Integer
 from app.annotations import UserID, DeviceID
 
 
-class User(Base):
+class UserModel(Base):
     __tablename__ = "users"
 
     id: Mapped[UserID] = mapped_column(Integer, primary_key=True)
