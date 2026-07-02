@@ -33,5 +33,13 @@ class UserRepository:
             update(UserModel).where(UserModel.id == user_id).values(**kwargs)
         )
 
+    async def update_by_device_id(self, device_id: DeviceID, **kwargs) -> None:
+        await self._session.execute(
+            update(UserModel).where(UserModel.device_id == device_id).values(**kwargs)
+        )
+
     async def delete(self, user_id: UserID) -> None:
         await self._session.execute(delete(UserModel).where(UserModel.id == user_id))
+
+    async def delete_by_device_id(self, device_id: DeviceID) -> None:
+        await self._session.execute(delete(UserModel).where(UserModel.device_id == device_id))
