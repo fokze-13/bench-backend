@@ -1163,6 +1163,17 @@ dev = ["pre-commit", "tox"]
 testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
+name = "poetry-core"
+version = "2.4.1"
+description = "Poetry PEP 517 Build Backend"
+optional = false
+python-versions = "<4.0,>=3.10"
+files = [
+    {file = "poetry_core-2.4.1-py3-none-any.whl", hash = "sha256:acf06f9537cd2625bdaec926d95d90b557ba15353bc71d27a3a8a441042b5316"},
+    {file = "poetry_core-2.4.1.tar.gz", hash = "sha256:89dceb6c10e9c6d8650a16183400e3c9ff9ddee13b0a81023b5575334a2b3744"},
+]
+
+[[package]]
 name = "pydantic"
 version = "2.13.4"
 description = "Data validation using Python type hints"
@@ -2267,4 +2278,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.14"
-content-hash = "02922fd3178f3023a94cb855e536e2e5321a40215313c6d581cc95f30ab3bc06"
+content-hash = "c2c0bfdbcbad94d3b2eb98382e7f192e4a1079a3d7abfe9b69b37c8826457b11"
