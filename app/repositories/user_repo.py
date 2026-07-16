@@ -42,4 +42,6 @@ class UserRepository:
         await self._session.execute(delete(UserModel).where(UserModel.id == user_id))
 
     async def delete_by_device_id(self, device_id: DeviceID) -> None:
-        await self._session.execute(delete(UserModel).where(UserModel.device_id == device_id))
+        await self._session.execute(
+            delete(UserModel).where(UserModel.device_id == device_id)
+        )
