@@ -10,7 +10,7 @@ class SessionThemeRepository:
 
     async def get_themes_list(self) -> list[tuple[ThemeID, Theme]]:
         themes = await self._session.execute(
-            select(SessionThemeModel.id, SessionThemeModel.theme)
+            select(SessionThemeModel.id, SessionThemeModel.theme_name)
         )
 
         return list(themes.scalars().all())

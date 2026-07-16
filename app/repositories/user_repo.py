@@ -1,4 +1,5 @@
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import selectinload
 from app.models.user import UserModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.annotations import UserID, DeviceID
@@ -17,6 +18,19 @@ class UserRepository:
     async def get_by_device_id(self, device_id: DeviceID) -> UserModel | None:
         user = await self._session.execute(
             select(UserModel).where(UserModel.device_id == device_id)
+        )
+        return user.scalar_one_or_none()
+
+    async def get_preferences_by_device_id(
+        self, device_id: DeviceID
+    ) -> UserModel | None:
+        user = await self._session.execute(
+            select(UserModel)
+            .where(UserModel.device_id == device_id)
+            .options(
+                selectinload(UserModel.preferred_language),
+                selectinload(UserModel.preferred_session_theme),
+            )
         )
         return user.scalar_one_or_none()
 
