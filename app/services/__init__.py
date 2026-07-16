@@ -3,6 +3,8 @@ from app.services import (
     session_search_service,
     session_manager_service,
     event_handler_service,
+    language_service,
+    session_theme_service
 )
 
 __all__ = (
@@ -10,4 +12,6 @@ __all__ = (
     "session_search_service",
     "session_manager_service",
     "event_handler_service",
+    "language_service",
+    "session_theme_service"
 )
