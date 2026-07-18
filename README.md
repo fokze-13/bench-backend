@@ -9,7 +9,7 @@
 > **This is the backend part of the project.**
 > Frontend: [link](https://github.com/fokze-13/bench-frontend.git)
 
-Built with **FastAPI + PostgreSQL + Redis**, fully packaged in **Docker** so the whole thing spins up with a single command — no local Python, no manual database setup, no dependency juggling.
+Built with **FastAPI + PostgreSQL + Redis**, fully packaged in **Docker** so the whole thing spins up with a single command
 
 ---
 
